@@ -1,7 +1,7 @@
 <?php
 include_once __DIR__ . "/../models/UserModel.php";
 
-class AuthController extends User {
+class AuthController extends UserModel {
 
     public function login() {
         
