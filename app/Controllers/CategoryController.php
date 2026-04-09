@@ -1,5 +1,7 @@
 <?php
-include __DIR__ . '/app/models/CategoryModel.php';
+include __DIR__ . '/../Models/CategoryModel.php';
+include_once __DIR__ . "/Controller.php";
+
 class CategoryController extends Controller {
     private $categoryModel;
 
@@ -13,14 +15,14 @@ class CategoryController extends Controller {
 
     public function index() {
         $categories = $this->categoryModel->getCategories();
-        include __DIR__ . "/app/views/category/index.php";
+        include __DIR__ . "/../views/category/index.php";
     }
 
     public function show() {
         $category_id = $_GET['category_id'] ?? null;
         $category = $this->categoryModel->getCategoryById($category_id);
         $recipes = $this->recipeModel->getRecipeByCategory($category_id);
-        include __DIR__ . "/app/views/category/show.php";
+        include __DIR__ . "/../Views/category/show.php";
     }
 
     public function create() {
@@ -35,7 +37,7 @@ class CategoryController extends Controller {
             header("Location: " . $this->baseUrl . "/categories");
             exit();
         }
-        include __DIR__ . "/app/views/category/create.php";
+        include __DIR__ . "/../Views/category/create.php";
     }
 
     public function edit() {
@@ -53,7 +55,7 @@ class CategoryController extends Controller {
         }
         $category_id = $_GET['id'] ?? null;
         $category = $this->categoryModel->getCategoryById($category_id);
-        include __DIR__ . '/app/views/category/edit.php';
+        include __DIR__ . '/../Views/category/edit.php';
     }
 
     public function delete() {

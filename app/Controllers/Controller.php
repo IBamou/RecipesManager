@@ -2,7 +2,9 @@
 
 abstract class Controller {
     protected $baseUrl;
+    
     public function __construct() {
-        $this->baseUrl = 'http://localhost/recipesManager';  
+        define('BASE_URL', 'http://localhost/recipesManager');
+        $this->baseUrl = BASE_URL;
     }
 }

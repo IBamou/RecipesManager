@@ -1,5 +1,8 @@
 <?php
-require __DIR__ . '/app/Models/RecipeModel.php';
+require_once __DIR__ . '/../Configs/Database.php';
+require_once __DIR__ . '/../Models/RecipeModel.php';
+require_once __DIR__ . "/Controller.php";
+
 class RecipeController extends Controller {
     private $recipeModel;
     public function __construct() {
@@ -9,13 +12,13 @@ class RecipeController extends Controller {
 
     public function index() {
         $recipes = $this->recipeModel->getRecipes();
-        include __DIR__ . "/app/views/recipe/index.php";
+        include __DIR__ . "/../Views/recipe/index.php";
     }
 
     public function show() {
         $recipe_id = $_GET['recipe_id'] ?? null;
         $recipe = $this->recipeModel->getRecipeById($recipe_id);
-        include __DIR__ . "/app/views/recipe/show.php";
+        include __DIR__ . "/../Views/recipe/show.php";
     }
 
     public function create() {
@@ -30,7 +33,7 @@ class RecipeController extends Controller {
             header("Location: " . $this->baseUrl . "/recipes");
             exit();
         }
-        include __DIR__ . "/app/views/recipe/create.php";
+        include __DIR__ . "/../Views/recipe/create.php";
     }
 
     public function edit() {
@@ -48,7 +51,7 @@ class RecipeController extends Controller {
         }
         $recipe_id = $_GET['id'] ?? null;
         $recipe = $this->recipeModel->getRecipeById($recipe_id);
-        include __DIR__ . '/app/views/recipe/edit.php';
+        include __DIR__ . '/../Views/recipe/edit.php';
     }
 
     public function delete() {
