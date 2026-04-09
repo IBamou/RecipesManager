@@ -13,6 +13,7 @@ function isloggedin() {
 }
 switch ($url) {
     case '/' || 'home':
+        include __DIR__ . '/app/views/home.php';
         break;
 
     case 'login':
