@@ -3,7 +3,7 @@
 require_once __DIR__ . "/../config/db.php";
 
 
-class User extends Database {
+class Usermodel extends Database {
 
 
     public function __construct() {
