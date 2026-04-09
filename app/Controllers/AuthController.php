@@ -1,16 +1,17 @@
 <?php
-include_once __DIR__ . "/../models/UserModel.php";
+include_once __DIR__ . "/app/models/UserModel.php";
+include_once __DIR__ . "/app/controllers/Controller.php";
 
-class AuthController extends User {
-
+class AuthController extends Controller {
+    public function __construct() {
+        parent::__construct();
+    }
     public function login() {
-        
-    if (session_status() == PHP_SESSION_NONE) session_start();
 
     $error = '';
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $userModel = new User();
+        $userModel = new UserModel();
 
         $userInput = trim($_POST['username_or_email'] ?? '');
         $password = $_POST['password'] ?? '';
@@ -31,7 +32,7 @@ class AuthController extends User {
             } else {
                 if (password_verify($password, $user['password'])) {
                     $_SESSION['user'] = $user;
-                    header("Location: index.php");
+                    header("Location: " . $this->baseUrl . "/dashboard");
                     exit;
                 } else {
                     $error = "Incorrect password.";
@@ -40,13 +41,12 @@ class AuthController extends User {
         }
     }
 
-    include __DIR__ . "/../views/auth/login.php";
+    include __DIR__ . "/app/views/auth/login.php";
 }
         
     
 
-    public function register() {
-        if (session_status() == PHP_SESSION_NONE) session_start();
+    public function signup() {
 
         $error = '';
         $success = '';
@@ -61,7 +61,7 @@ class AuthController extends User {
             if (empty($username) || empty($email) || empty($password) || empty($confirmPassword)) {
                 $error = "Please fill in all fields.";
             } else {
-                $userModel = new User();
+                $userModel = new UserModel();
 
                 // Check if email already exists
                 $existing = $userModel->findByEmail($email);
@@ -74,13 +74,12 @@ class AuthController extends User {
             }
         }
 
-        include __DIR__ . "/../views/auth/register.php";
+        include __DIR__ . "/app/views/auth/signup.php";
     }
 
     public function logout() {
-        if (session_status() == PHP_SESSION_NONE) session_start();
         session_destroy();
-        header("Location: login.php");
+        header("Location: " . $this->baseUrl . "/login");
         exit;
     }
 }
