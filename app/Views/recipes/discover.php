@@ -2,8 +2,8 @@
 
 <div class="page-header">
   <div>
-    <h1>Favorites</h1>
-    <div class="sub">Discover and explore all community recipes</div>
+    <h1><i class="fas fa-compass" style="color:var(--gold);margin-right:.5rem;"></i> Discover</h1>
+    <div class="sub">Explore recipes from the community</div>
   </div>
   <div class="header-right">
     <div class="search-wrap">
@@ -33,14 +33,18 @@
 
   <?php if (empty($recipes)): ?>
     <div class="grid"><div class="empty-state">
-      <i class="fas fa-star"></i>
+      <i class="fas fa-compass"></i>
       <h3>No recipes found</h3>
       <p>Be the first to share a recipe with the community!</p>
       <a href="<?php echo BASE_URL; ?>/recipes/create" class="btn btn-gold"><i class="fas fa-plus"></i> Share Your Recipe</a>
     </div></div>
   <?php else: ?>
     <div class="grid grid-auto" id="discover-grid">
-      <?php foreach ($recipes as $i => $recipe): ?>
+      <?php 
+      $favoriteIdsArray = $favoriteIds ?? [];
+      foreach ($recipes as $i => $recipe): 
+        $isFavorited = in_array($recipe['id'], $favoriteIdsArray);
+      ?>
         <div class="recipe-card fade-up" data-recipe-disc
              data-category="<?php echo htmlspecialchars($recipe['category_name'] ?? ''); ?>"
              style="animation-delay:<?php echo $i * 0.06; ?>s">
@@ -68,10 +72,13 @@
           <div class="recipe-card-actions">
             <a href="<?php echo BASE_URL; ?>/recipes/show?recipe_id=<?php echo $recipe['id']; ?>"
                class="btn btn-outline btn-sm" style="flex:1;justify-content:center;">
-              <i class="fas fa-eye"></i> View Recipe
+              <i class="fas fa-eye"></i> View
             </a>
-            <button class="btn btn-ghost btn-sm btn-icon" title="Favorite" onclick="this.querySelector('i').style.color=this.querySelector('i').style.color?'':'var(--gold)'">
-              <i class="fas fa-star"></i>
+            <button class="btn <?php echo $isFavorited ? 'btn-gold' : 'btn-ghost'; ?> btn-sm btn-icon favorite-btn" 
+                    data-recipe-id="<?php echo $recipe['id']; ?>" 
+                    title="<?php echo $isFavorited ? 'Remove from favorites' : 'Add to favorites'; ?>"
+                    onclick="toggleFavorite(this)">
+              <i class="fas fa-star" style="<?php echo $isFavorited ? 'color:var(--gold);' : ''; ?>"></i>
             </button>
           </div>
 
@@ -89,10 +96,47 @@ function filterCards(q, attr) {
     card.style.display = card.innerText.toLowerCase().includes(lower) ? '' : 'none';
   });
 }
+
 function filterCategory(cat) {
   document.querySelectorAll('[data-recipe-disc]').forEach(card => {
     const cardCat = card.getAttribute('data-category') || '';
     card.style.display = (!cat || cardCat === cat) ? '' : 'none';
+  });
+}
+
+function toggleFavorite(btn) {
+  const recipeId = btn.getAttribute('data-recipe-id');
+  const icon = btn.querySelector('i');
+  
+  fetch('<?php echo BASE_URL; ?>/favorites/toggle', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'recipe_id=' + recipeId
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      if (data.favorited) {
+        btn.classList.remove('btn-ghost');
+        btn.classList.add('btn-gold');
+        icon.style.color = 'var(--gold)';
+        btn.setAttribute('title', 'Remove from favorites');
+      } else {
+        btn.classList.remove('btn-gold');
+        btn.classList.add('btn-ghost');
+        icon.style.color = '';
+        btn.setAttribute('title', 'Add to favorites');
+      }
+    } else {
+      alert(data.message || 'Please login to add favorites');
+      window.location.href = '<?php echo BASE_URL; ?>/auth/login';
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Failed to update favorite');
   });
 }
 </script>

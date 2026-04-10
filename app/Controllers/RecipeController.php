@@ -1,13 +1,16 @@
 <?php
 require_once __DIR__ . "/Controller.php";
 require_once __DIR__ . "/../Models/RecipeModel.php";
+require_once __DIR__ . "/../Models/FavoriteModel.php";
 
 class RecipeController extends Controller {
     private $recipeModel;
+    private $favoriteModel;
     
     public function __construct() {
         parent::__construct();
         $this->recipeModel = new RecipeModel();
+        $this->favoriteModel = new FavoriteModel();
     }
 
     public function index() {
@@ -19,6 +22,8 @@ class RecipeController extends Controller {
     public function discover() {
         $recipes = $this->recipeModel->getAllRecipes();
         $categories = $this->recipeModel->getCategories();
+        $userId = $_SESSION['user']['id'] ?? 0;
+        $favoriteIds = $this->favoriteModel->getFavoriteIds($userId);
         include __DIR__ . "/../Views/recipes/discover.php";
     }
 

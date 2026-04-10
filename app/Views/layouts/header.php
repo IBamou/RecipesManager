@@ -35,6 +35,9 @@
           <i class="fas fa-layer-group"></i> Categories
         </a>
         <a href="<?php echo BASE_URL; ?>/recipes/discover" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI']??'','discover') !== false ? 'active' : ''); ?>">
+          <i class="fas fa-compass"></i> Discover
+        </a>
+        <a href="<?php echo BASE_URL; ?>/favorites" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI']??'','favorites') !== false ? 'active' : ''); ?>">
           <i class="fas fa-star"></i> Favorites
         </a>
       </div>
