@@ -1,18 +1,24 @@
 <?php
-require_once __DIR__ . '/../Configs/Database.php';
-require_once __DIR__ . '/../Models/RecipeModel.php';
 require_once __DIR__ . "/Controller.php";
+require_once __DIR__ . "/../Models/RecipeModel.php";
 
 class RecipeController extends Controller {
     private $recipeModel;
+    
     public function __construct() {
         parent::__construct();
         $this->recipeModel = new RecipeModel();
     }
 
     public function index() {
-        $recipes = $this->recipeModel->getRecipes();
+        $userId = $_SESSION['user']['id'] ?? 0;
+        $recipes = $this->recipeModel->getRecipesByUser($userId);
         include __DIR__ . "/../Views/recipe/index.php";
+    }
+
+    public function discover() {
+        $recipes = $this->recipeModel->getAllRecipes();
+        include __DIR__ . "/../Views/recipe/discover.php";
     }
 
     public function show() {
@@ -22,14 +28,22 @@ class RecipeController extends Controller {
     }
 
     public function create() {
+        $categories = $this->recipeModel->getCategories();
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $recipe_name = $_POST['name'] ?? null;
-            $recipe_description = $_POST['description'] ?? null;
             $data = [
-                'name' => $recipe_name,
-                'description' => $recipe_description
+                'name' => $_POST['name'] ?? '',
+                'description' => $_POST['description'] ?? '',
+                'user_id' => $_SESSION['user']['id'] ?? 0,
+                'category_id' => $_POST['category_id'] ?? null,
+                'ingredients' => $_POST['ingredients'] ?? '',
+                'instructions' => $_POST['instructions'] ?? '',
+                'preparation_time' => $_POST['preparation_time'] ?? 0,
+                'cooking_time' => $_POST['cooking_time'] ?? 0,
+                'difficulty' => $_POST['difficulty'] ?? 'medium',
+                'image_url' => $_POST['image_url'] ?? ''
             ];
-            $this->recipeModel->createRecipe($data);
+            $this->recipeModel->storeRecipe($data);
             header("Location: " . $this->baseUrl . "/recipes");
             exit();
         }
@@ -37,15 +51,22 @@ class RecipeController extends Controller {
     }
 
     public function edit() {
+        $categories = $this->recipeModel->getCategories();
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $recipe_id = $_POST['recipe_id'] ?? null;
-            $recipe_name = $_POST['name'] ?? null;
-            $recipe_description = $_POST['description'] ?? null;
             $data = [
-                'name' => $recipe_name,
-                'description' => $recipe_description
+                'id' => $_POST['recipe_id'] ?? 0,
+                'name' => $_POST['name'] ?? '',
+                'description' => $_POST['description'] ?? '',
+                'category_id' => $_POST['category_id'] ?? null,
+                'ingredients' => $_POST['ingredients'] ?? '',
+                'instructions' => $_POST['instructions'] ?? '',
+                'preparation_time' => $_POST['preparation_time'] ?? 0,
+                'cooking_time' => $_POST['cooking_time'] ?? 0,
+                'difficulty' => $_POST['difficulty'] ?? 'medium',
+                'image_url' => $_POST['image_url'] ?? ''
             ];
-            $this->recipeModel->updateRecipe($recipe_id, $data);
+            $this->recipeModel->updateRecipe($data);
             header("Location: " . $this->baseUrl . "/recipes");
             exit();
         }

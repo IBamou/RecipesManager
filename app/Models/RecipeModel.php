@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../Configs/Database.php";
+
 class RecipeModel extends Database {
     public function __construct() {
         parent::__construct();
@@ -12,7 +13,37 @@ class RecipeModel extends Database {
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            return [];
+        }
+    }
+
+    public function getAllRecipes() {
+        try {
+            $sql = 'SELECT recipes.*, categories.name as category_name 
+                    FROM recipes 
+                    LEFT JOIN categories ON recipes.category_id = categories.id 
+                    ORDER BY recipes.created_at DESC';
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
+
+    public function getRecipesByUser(int $userId) {
+        try {
+            $sql = 'SELECT recipes.*, categories.name as category_name 
+                    FROM recipes 
+                    LEFT JOIN categories ON recipes.category_id = categories.id 
+                    WHERE recipes.user_id = :user_id 
+                    ORDER BY recipes.created_at DESC';
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return [];
         }
     }
 
@@ -28,22 +59,25 @@ class RecipeModel extends Database {
         }
     }
 
-    public function getRecipeById(int $id) {
+    public function getRecipeById($id) {
         try {
-            $sql = 'SELECT * FROM recipes WHERE id = :id';
+            $sql = 'SELECT recipes.*, categories.name as category_name 
+                    FROM recipes 
+                    LEFT JOIN categories ON recipes.category_id = categories.id 
+                    WHERE recipes.id = :id';
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            return null;
         }
     }
 
     public function storeRecipe(array $data) {
         try {
-            $sql = 'INSERT INTO recipes (name, description, user_id, category_id, ingredients, instructions, preparation_time, cooking_time, difficulty) 
-                    VALUES (:name, :description, :user_id, :category_id, :ingredients, :instructions, :preparation_time, :cooking_time, :difficulty)';
+            $sql = 'INSERT INTO recipes (name, description, user_id, category_id, ingredients, instructions, preparation_time, cooking_time, difficulty, image_url) 
+                    VALUES (:name, :description, :user_id, :category_id, :ingredients, :instructions, :preparation_time, :cooking_time, :difficulty, :image_url)';
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':name', $data['name'], PDO::PARAM_STR);
             $stmt->bindParam(':description', $data['description'], PDO::PARAM_STR);
@@ -54,9 +88,11 @@ class RecipeModel extends Database {
             $stmt->bindParam(':preparation_time', $data['preparation_time'], PDO::PARAM_INT);
             $stmt->bindParam(':cooking_time', $data['cooking_time'], PDO::PARAM_INT);
             $stmt->bindParam(':difficulty', $data['difficulty'], PDO::PARAM_STR);
+            $stmt->bindParam(':image_url', $data['image_url'], PDO::PARAM_STR);
             $stmt->execute();
+            return true;
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            return false;
         }
     }
 
@@ -64,7 +100,7 @@ class RecipeModel extends Database {
         try {
             $sql = 'UPDATE recipes SET name = :name, description = :description, category_id = :category_id, 
                     ingredients = :ingredients, instructions = :instructions, preparation_time = :preparation_time, 
-                    cooking_time = :cooking_time, difficulty = :difficulty WHERE id = :id';
+                    cooking_time = :cooking_time, difficulty = :difficulty, image_url = :image_url WHERE id = :id';
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':name', $data['name'], PDO::PARAM_STR);
             $stmt->bindParam(':description', $data['description'], PDO::PARAM_STR);
@@ -74,10 +110,12 @@ class RecipeModel extends Database {
             $stmt->bindParam(':preparation_time', $data['preparation_time'], PDO::PARAM_INT);
             $stmt->bindParam(':cooking_time', $data['cooking_time'], PDO::PARAM_INT);
             $stmt->bindParam(':difficulty', $data['difficulty'], PDO::PARAM_STR);
+            $stmt->bindParam(':image_url', $data['image_url'], PDO::PARAM_STR);
             $stmt->bindParam(':id', $data['id'], PDO::PARAM_INT);
             $stmt->execute();
+            return true;
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            return false;
         }
     }
 
@@ -87,19 +125,22 @@ class RecipeModel extends Database {
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
+            return true;
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            return false;
         }
     }
 
     public function getCategories() {
         try {
-            $sql = 'SELECT id, name FROM categories ORDER BY name ASC';
+            $userId = $_SESSION['user']['id'] ?? 0;
+            $sql = 'SELECT id, name FROM categories WHERE user_id = :user_id ORDER BY name ASC';
             $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            return [];
         }
     }
 
@@ -112,11 +153,7 @@ class RecipeModel extends Database {
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo $e->getMessage();
             return [];
         }
     }
 }
-
-
-

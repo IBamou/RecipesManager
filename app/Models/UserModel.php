@@ -1,10 +1,7 @@
 <?php
+require_once __DIR__ . "/../Configs/Database.php";
 
-require_once __DIR__ . "/../config/db.php";
-
-
-class Usermodel extends Database {
-
+class UserModel extends Database {
 
     public function __construct() {
         parent::__construct();   
@@ -12,19 +9,19 @@ class Usermodel extends Database {
 
     public function getUsers() {
         try {
-            $query = 'SELECT id, name, email, role, created_at FROM users ORDER BY created_at DESC';
+            $query = 'SELECT id, name, email, created_at FROM users ORDER BY created_at DESC';
             $stmt = $this->db->prepare($query);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
-            echo $e->getMessage();
+            return [];
         }
     }
 
     public function findByEmail(string $email) {
         try {
             if ($email) {
-                $query = 'SELECT id, name, email, created_at FROM users WHERE email = :email';
+                $query = 'SELECT id, name, email, password, created_at FROM users WHERE email = :email';
                 $stmt = $this->db->prepare($query);
                 $stmt->bindParam(':email', $email);
                 $stmt->execute();
@@ -34,15 +31,16 @@ class Usermodel extends Database {
             return null;
         }
     }
-    public function findByUsername(string $username): bool {
+
+    public function findByName(string $name) {
         try {
-            $query = 'SELECT id FROM users WHERE username = :username';
+            $query = 'SELECT id, name, email, password, created_at FROM users WHERE name = :name';
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':username', $username);
+            $stmt->bindParam(':name', $name);
             $stmt->execute();
-            return $stmt->fetch() !== false;
+            return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
-            return false;
+            return null;
         }
     }
 
@@ -54,10 +52,9 @@ class Usermodel extends Database {
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
         } catch (Exception $e) {
-            echo $e->getMessage();
+            return null;
         }
     }
-
 
     public function emailExists(string $email): bool {
         try {
@@ -71,24 +68,21 @@ class Usermodel extends Database {
         }
     }
 
-
     public function addUser(string $name, string $email, string $password) {
         try {
-            // Check if email already exists
             if ($this->emailExists($email)) {
                 return false;
             }
             
-            $query = 'INSERT INTO users (name, email, password, created_at) 
-                       VALUES (:name, :email, :password, NOW())';
+            $query = 'INSERT INTO users (name, email, password, created_at) VALUES (:name, :email, :password, NOW())';
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':email', $email);
             $stmt->bindParam(':password', $password);
             $stmt->execute();
             return true;
-            } catch (Exception $e) {
-                echo $e->getMessage();
+        } catch (Exception $e) {
+            return false;
         }
     }
 
@@ -102,14 +96,25 @@ class Usermodel extends Database {
             $stmt->execute();
             return true;
         } catch (Exception $e) {
-            echo $e->getMessage();
+            return false;
         }
     }
 
+    public function updateName(int $id, string $name) {
+        try {
+            $query = 'UPDATE users SET name = :name WHERE id = :id';
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
 
     public function changePassword(array $data) {
         try {
-            // First verify current password
             $query = 'SELECT password FROM users WHERE id = :id';
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':id', $data['id'], PDO::PARAM_INT);
@@ -120,7 +125,6 @@ class Usermodel extends Database {
                 return false;
             }
             
-            // Update to new password
             $hashedPassword = password_hash($data['newPassword'], PASSWORD_DEFAULT);
             $query = 'UPDATE users SET password = :password WHERE id = :id';
             $stmt = $this->db->prepare($query);
@@ -130,8 +134,7 @@ class Usermodel extends Database {
             
             return true;
         } catch (Exception $e) {
-            echo $e->getMessage();
+            return false;
         }
     }
 }
-?>

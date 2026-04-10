@@ -1,39 +1,42 @@
 <?php
-include __DIR__ . '/../Models/CategoryModel.php';
-include_once __DIR__ . "/Controller.php";
+require_once __DIR__ . "/Controller.php";
+require_once __DIR__ . "/../Models/CategoryModel.php";
 
 class CategoryController extends Controller {
     private $categoryModel;
-
-    private $recipeModel;
-
+    
     public function __construct() {
         parent::__construct();
         $this->categoryModel = new CategoryModel();
-        $this->recipeModel = new RecipeModel();
     }
 
     public function index() {
-        $categories = $this->categoryModel->getCategories();
-        include __DIR__ . "/../views/category/index.php";
+        $userId = $_SESSION['user']['id'] ?? 0;
+        $categories = $this->categoryModel->getCategoriesByUser($userId);
+        include __DIR__ . "/../Views/category/index.php";
     }
 
     public function show() {
         $category_id = $_GET['category_id'] ?? null;
         $category = $this->categoryModel->getCategoryById($category_id);
-        $recipes = $this->recipeModel->getRecipeByCategory($category_id);
+        
+        require_once __DIR__ . "/../Models/RecipeModel.php";
+        $recipeModel = new RecipeModel();
+        $recipes = $recipeModel->getRecipesByCategory($category_id, $_SESSION['user']['id'] ?? 0);
+        
         include __DIR__ . "/../Views/category/show.php";
     }
 
     public function create() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $category_name = $_POST['name'] ?? null;
-            $category_description = $_POST['description'] ?? null;
+            $userId = $_SESSION['user']['id'] ?? 0;
             $data = [
-                'name' => $category_name,
-                'description' => $category_description
+                'name' => $_POST['name'] ?? '',
+                'description' => $_POST['description'] ?? '',
+                'user_id' => $userId
             ];
-            $this->categoryModel->createCategory($data);
+            $this->categoryModel->storeCategory($data);
+            
             header("Location: " . $this->baseUrl . "/categories");
             exit();
         }
@@ -42,14 +45,12 @@ class CategoryController extends Controller {
 
     public function edit() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $category_id = $_POST['category_id'] ?? null;
-            $category_name = $_POST['name'] ?? null;
-            $category_description = $_POST['description'] ?? null;
             $data = [
-                'name' => $category_name,
-                'description' => $category_description
+                'id' => $_POST['category_id'] ?? 0,
+                'name' => $_POST['name'] ?? '',
+                'description' => $_POST['description'] ?? ''
             ];
-            $this->categoryModel->updateCategory($category_id, $data);
+            $this->categoryModel->updateCategory($data);
             header("Location: " . $this->baseUrl . "/categories");
             exit();
         }

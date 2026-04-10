@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../Configs/Database.php";
+
 class CategoryModel extends Database {
     public function __construct() {
         parent::__construct();
@@ -12,7 +13,24 @@ class CategoryModel extends Database {
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            return [];
+        }
+    }
+
+    public function getCategoriesByUser(int $userId) {
+        try {
+            $sql = 'SELECT c.*, COUNT(r.id) as recipe_count 
+                    FROM categories c 
+                    LEFT JOIN recipes r ON c.id = r.category_id 
+                    WHERE c.user_id = :user_id 
+                    GROUP BY c.id 
+                    ORDER BY c.created_at DESC';
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return [];
         }
     }
 
@@ -24,7 +42,7 @@ class CategoryModel extends Database {
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            return null;
         }
     }
 
@@ -36,8 +54,9 @@ class CategoryModel extends Database {
             $stmt->bindParam(':description', $data['description'], PDO::PARAM_STR);
             $stmt->bindParam(':user_id', $data['user_id'], PDO::PARAM_INT);
             $stmt->execute();
+            return true;
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            return false;
         }
     }
 
@@ -49,8 +68,9 @@ class CategoryModel extends Database {
             $stmt->bindParam(':description', $data['description'], PDO::PARAM_STR);
             $stmt->bindParam(':id', $data['id'], PDO::PARAM_INT);
             $stmt->execute();
+            return true;
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            return false;
         }
     }
 
@@ -60,8 +80,9 @@ class CategoryModel extends Database {
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
+            return true;
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            return false;
         }
     }
 
@@ -77,6 +98,3 @@ class CategoryModel extends Database {
         }
     }
 }
-
-
-

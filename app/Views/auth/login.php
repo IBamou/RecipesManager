@@ -1,40 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Recipes Manager</title>
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/public/css/style.css">
-</head>
-<body>
-    <div class="auth-container">
-        <div class="card">
-            <h1>Login</h1>
-            
-            <?php if ($error): ?>
-                <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
-            <?php endif; ?>
-            
-            <form method="POST" action="">
-                <div class="form-group">
-                    <label for="username_or_email">Username or Email</label>
-                    <input type="text" id="username_or_email" name="username_or_email" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                
-                <button type="submit" class="btn" style="width: 100%;">Login</button>
-            </form>
-            
-            <p class="text-center mt-2">
-                Don't have an account? <a href="<?php echo BASE_URL; ?>/signup">Sign up</a>
-            </p>
+<?php echo $this->include('layouts/header'); ?>
+
+<div class="auth-split-layout">
+    <div class="auth-image-panel">
+        <div class="auth-image-content">
+            <h1>Welcome Back!</h1>
+            <p>Log in to access your personal recipe box and connect with our community.</p>
         </div>
     </div>
-    
-    <script src="<?php echo BASE_URL; ?>/public/js/main.js"></script>
-</body>
-</html>
+    <div class="auth-form-panel">
+        <div class="auth-form-container">
+            <h2>Login to Your Account</h2>
+            <?php if (!empty($error)): ?>
+                <div style="background:#f8d7da; color:#721c24; padding:12px; border-radius:8px; margin-bottom:1rem;">
+                    <?php echo htmlspecialchars($error); ?>
+                </div>
+            <?php endif; ?>
+            <form method="POST" action="<?php echo BASE_URL; ?>/auth/login">
+                <div class="form-group">
+                    <label for="name_or_email">Email Address</label>
+                    <input type="text" id="name_or_email" name="name_or_email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+            <p class="auth-switch">Don't have an account? <a href="<?php echo BASE_URL; ?>/auth/signup">Sign Up</a></p>
+        </div>
+    </div>
+</div>
