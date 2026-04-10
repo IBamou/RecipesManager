@@ -37,7 +37,6 @@
       <i class="fas fa-bowl-food"></i>
       <h3>No recipes in this category yet</h3>
       <p>Be the first to add a recipe to <em><?php echo htmlspecialchars($category['name'] ?? ''); ?></em>.</p>
-      <a href="<?php echo BASE_URL; ?>/recipes/create" class="btn btn-gold"><i class="fas fa-plus"></i> Add Recipe</a>
     </div></div>
   <?php else: ?>
     <div class="section-header">

@@ -28,7 +28,7 @@
         <a href="<?php echo BASE_URL; ?>/dashboard" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI']??'','dashboard') !== false ? 'active' : ''); ?>">
           <i class="fas fa-house"></i> Dashboard
         </a>
-        <a href="<?php echo BASE_URL; ?>/recipes" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI']??'','recipes') !== false ? 'active' : ''); ?>">
+        <a href="<?php echo BASE_URL; ?>/recipes" class="nav-link <?php echo ($_SERVER['REQUEST_URI'] ?? '' === '/recipesManager/recipes' || $_SERVER['REQUEST_URI'] ?? '' === '/recipes' ? 'active' : ''); ?>">
           <i class="fas fa-book-open"></i> Recipes
         </a>
         <a href="<?php echo BASE_URL; ?>/categories" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI']??'','/categories') !== false ? 'active' : ''); ?>">

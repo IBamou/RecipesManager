@@ -10,17 +10,17 @@
     <p>Explore, create and share authentic Moroccan recipes with a vibrant community of passionate food lovers.</p>
     <div class="hero-actions">
       <?php if (!isset($_SESSION['user'])): ?>
-        <a href="<?php echo BASE_URL; ?>/auth/signup" class="btn btn-gold" style="padding:.9rem 2rem;font-size:1rem;">
+        <a href="<?php echo BASE_URL; ?>/auth/signup" class="btn btn-gold btn-lg">
           <i class="fas fa-fire-flame-curved"></i> Start Cooking
         </a>
-        <a href="<?php echo BASE_URL; ?>/auth/login" class="btn btn-outline" style="padding:.9rem 2rem;font-size:1rem;">
+        <a href="<?php echo BASE_URL; ?>/auth/login" class="btn btn-outline btn-lg">
           Login
         </a>
       <?php else: ?>
-        <a href="<?php echo BASE_URL; ?>/dashboard" class="btn btn-gold" style="padding:.9rem 2rem;font-size:1rem;">
+        <a href="<?php echo BASE_URL; ?>/dashboard" class="btn btn-gold btn-lg">
           Go to Dashboard <i class="fas fa-arrow-right"></i>
         </a>
-        <a href="<?php echo BASE_URL; ?>/recipes/discover" class="btn btn-outline" style="padding:.9rem 2rem;font-size:1rem;">
+        <a href="<?php echo BASE_URL; ?>/recipes/discover" class="btn btn-outline btn-lg">
           Explore Recipes
         </a>
       <?php endif; ?>

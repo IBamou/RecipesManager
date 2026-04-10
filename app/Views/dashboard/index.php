@@ -58,7 +58,6 @@
         <i class="fas fa-utensils"></i>
         <h3>No recipes yet</h3>
         <p>Start sharing your culinary creations with the world.</p>
-        <a href="<?php echo BASE_URL; ?>/recipes/create" class="btn btn-gold"><i class="fas fa-plus"></i> Create Recipe</a>
       </div>
     <?php else: ?>
       <div class="grid grid-auto">

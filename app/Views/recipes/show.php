@@ -6,7 +6,6 @@
       <i class="fas fa-triangle-exclamation"></i>
       <h3>Recipe not found</h3>
       <p>This recipe doesn't exist or has been removed.</p>
-      <a href="<?php echo BASE_URL; ?>/recipes" class="btn btn-gold">Back to Recipes</a>
     </div>
   </div>
 <?php else: ?>

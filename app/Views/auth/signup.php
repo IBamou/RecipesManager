@@ -59,7 +59,7 @@
             <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="••••••••" required>
           </div>
         </div>
-        <button type="submit" class="btn btn-gold" style="width:100%;justify-content:center;padding:.9rem;font-size:1rem;margin-top:.5rem;">
+        <button type="submit" class="btn btn-gold btn-lg" style="width:100%;justify-content:center;margin-top:.5rem;">
           <i class="fas fa-user-plus"></i> Create Account
         </button>
       </form>

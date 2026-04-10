@@ -24,7 +24,6 @@
       <i class="fas fa-layer-group"></i>
       <h3>No categories yet</h3>
       <p>Create your first category to start organizing your recipes.</p>
-      <a href="<?php echo BASE_URL; ?>/categories/create" class="btn btn-gold"><i class="fas fa-plus"></i> Create Category</a>
     </div></div>
   <?php else: ?>
     <div class="grid grid-auto" id="cat-grid">

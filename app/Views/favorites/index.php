@@ -22,7 +22,6 @@
       <i class="fas fa-star"></i>
       <h3>No favorites yet</h3>
       <p>Start exploring and save recipes you love by clicking the star icon.</p>
-      <a href="<?php echo BASE_URL; ?>/recipes/discover" class="btn btn-gold"><i class="fas fa-compass"></i> Explore Recipes</a>
     </div></div>
   <?php else: ?>
     <div class="grid grid-auto">
@@ -117,7 +116,6 @@ function checkEmptyState() {
         <i class="fas fa-star"></i>
         <h3>No favorites yet</h3>
         <p>Start exploring and save recipes you love by clicking the star icon.</p>
-        <a href="<?php echo BASE_URL; ?>/recipes/discover" class="btn btn-gold"><i class="fas fa-compass"></i> Explore Recipes</a>
       </div>
     `;
   }

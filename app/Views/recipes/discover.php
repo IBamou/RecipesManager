@@ -6,7 +6,7 @@
     <div class="sub">Explore recipes from the community</div>
   </div>
   <div class="header-right">
-    <a href="<?php echo BASE_URL; ?>/recipes/create" class="btn btn-gold" style="margin-left:1rem;">
+    <a href="<?php echo BASE_URL; ?>/recipes/create" class="btn btn-gold btn-sm" style="margin-left:1rem;">
       <i class="fas fa-plus"></i> Share Recipe
     </a>
   </div>
@@ -15,23 +15,23 @@
 <div class="page-body">
   <!-- Discover controls: page-level filters -->
   <div class="discover-controls" style="display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0 1.5rem;">
-    <input id="ds-name" class="form-control" type="text" placeholder="Search by name" style="min-width:260px;">
+    <input id="ds-name" class="form-control" type="text" placeholder="Search by name" style="min-width:260px;" onkeyup="if(event.key==='Enter') ds_applyFilters()">
     <select id="ds-cat" class="form-control" style="min-width:200px;">
       <option value="">All Categories</option>
       <?php foreach ($categories as $cat): ?>
         <option value="<?php echo htmlspecialchars($cat['name']); ?>"><?php echo htmlspecialchars($cat['name']); ?></option>
       <?php endforeach; ?>
     </select>
-    <button class="btn btn-outline" onclick="ds_search()">Search</button>
-    <button class="btn btn-outline" onclick="ds_applyFilters()">Apply Filters</button>
-    <button class="btn btn-outline" onclick="ds_clearFilters()">Clear</button>
+    <button type="button" class="btn btn-outline btn-sm" onclick="ds_search()">Search</button>
+    <button type="button" class="btn btn-outline btn-sm" onclick="ds_applyFilters()">Apply Filters</button>
+    <button type="button" class="btn btn-outline btn-sm" onclick="ds_clearFilters()">Clear</button>
   </div>
 
   <?php if (!empty($categories)): ?>
   <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem;">
-    <button class="badge badge-gold" onclick="ds_clearFilters()" style="border:none;cursor:pointer;padding:.4rem .9rem;font-size:.75rem;">All</button>
+    <button type="button" class="badge badge-gold" onclick="ds_clearFilters()" style="border:none;cursor:pointer;padding:.4rem .9rem;font-size:.75rem;">All</button>
     <?php foreach ($categories as $cat): ?>
-      <button class="badge" onclick="document.getElementById('ds-cat').value='<?php echo htmlspecialchars($cat['name']); ?>'; ds_applyFilters();" style="border:none;cursor:pointer;padding:.4rem .9rem;font-size:.75rem;background:var(--surface-2);">
+      <button type="button" class="badge" onclick="document.getElementById('ds-cat').value='<?php echo htmlspecialchars($cat['name']); ?>'; ds_applyFilters();" style="border:none;cursor:pointer;padding:.4rem .9rem;font-size:.75rem;background:var(--surface-2);">
         <?php echo htmlspecialchars($cat['name']); ?>
       </button>
     <?php endforeach; ?>
@@ -43,7 +43,6 @@
       <i class="fas fa-compass"></i>
       <h3>No recipes found</h3>
       <p>Be the first to share a recipe with the community!</p>
-      <a href="<?php echo BASE_URL; ?>/recipes/create" class="btn btn-gold"><i class="fas fa-plus"></i> Share Your Recipe</a>
     </div></div>
   <?php else: ?>
     <div class="grid grid-auto" id="discover-grid">

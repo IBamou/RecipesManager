@@ -22,7 +22,6 @@
       <i class="fas fa-book-open"></i>
       <h3>No recipes yet</h3>
       <p>Start building your cookbook by publishing your first recipe.</p>
-      <a href="<?php echo BASE_URL; ?>/recipes/create" class="btn btn-gold"><i class="fas fa-plus"></i> Create Your First Recipe</a>
     </div></div>
   <?php else: ?>
     <div class="grid grid-auto">
