@@ -13,18 +13,19 @@ class RecipeController extends Controller {
     public function index() {
         $userId = $_SESSION['user']['id'] ?? 0;
         $recipes = $this->recipeModel->getRecipesByUser($userId);
-        include __DIR__ . "/../Views/recipe/index.php";
+        include __DIR__ . "/../Views/recipes/index.php";
     }
 
     public function discover() {
         $recipes = $this->recipeModel->getAllRecipes();
-        include __DIR__ . "/../Views/recipe/discover.php";
+        $categories = $this->recipeModel->getCategories();
+        include __DIR__ . "/../Views/recipes/discover.php";
     }
 
     public function show() {
         $recipe_id = $_GET['recipe_id'] ?? null;
         $recipe = $this->recipeModel->getRecipeById($recipe_id);
-        include __DIR__ . "/../Views/recipe/show.php";
+        include __DIR__ . "/../Views/recipes/show.php";
     }
 
     public function create() {
@@ -47,7 +48,7 @@ class RecipeController extends Controller {
             header("Location: " . $this->baseUrl . "/recipes");
             exit();
         }
-        include __DIR__ . "/../Views/recipe/create.php";
+        include __DIR__ . "/../Views/recipes/create.php";
     }
 
     public function edit() {
@@ -72,7 +73,7 @@ class RecipeController extends Controller {
         }
         $recipe_id = $_GET['id'] ?? null;
         $recipe = $this->recipeModel->getRecipeById($recipe_id);
-        include __DIR__ . '/../Views/recipe/edit.php';
+        include __DIR__ . '/../Views/recipes/edit.php';
     }
 
     public function delete() {

@@ -1,34 +1,29 @@
+<?php if (isset($_SESSION['user'])): ?>
+  </div><!-- /main-wrap -->
+</div><!-- /app-shell -->
+<?php else: ?>
 </main>
-
-<footer class="site-footer">
-    <div class="container">
-        <div class="footer-col">
-            <h4>About Us</h4>
-            <p>Marrakech Food Lovers is a passionate community for sharing and discovering authentic Moroccan recipes and culinary traditions.</p>
-        </div>
-        <div class="footer-col">
-            <h4>Quick Links</h4>
-            <ul>
-                <li><a href="<?php echo BASE_URL; ?>">Home</a></li>
-                <li><a href="<?php echo BASE_URL; ?>/recipes/discover">Discover Recipes</a></li>
-                <li><a href="<?php echo BASE_URL; ?>/categories">Categories</a></li>
-                <li><a href="#">Contact Us</a></li>
-            </ul>
-        </div>
-        <div class="footer-col">
-            <h4>Follow Us</h4>
-            <ul>
-                <li><a href="#"><i class="fab fa-facebook-f"></i> Facebook</a></li>
-                <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
-                <li><a href="#"><i class="fab fa-pinterest-p"></i> Pinterest</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <p>&copy; <?php echo date('Y'); ?> Marrakech Food Lovers. All Rights Reserved.</p>
-    </div>
+<footer class="pub-footer">
+  <div class="pub-logo font-serif"><i class="fas fa-fire-flame-curved text-gold"></i> Marrakech Food Lovers</div>
+  <nav class="pub-footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Instagram</a>
+  </nav>
+  <div style="font-size:.78rem;color:var(--muted);">&copy; <?php echo date('Y'); ?> Marrakech Food Lovers</div>
 </footer>
+<?php endif; ?>
 
-<script src="<?php echo BASE_URL; ?>/public/js/script.js"></script>
+<script>
+// Active nav highlighting
+document.addEventListener('DOMContentLoaded', () => {
+  const path = window.location.pathname;
+  document.querySelectorAll('.nav-link').forEach(link => {
+    if (link.href && path.includes(link.getAttribute('href').split('?')[0].replace(window.location.origin,''))) {
+      link.classList.add('active');
+    }
+  });
+});
+</script>
 </body>
 </html>

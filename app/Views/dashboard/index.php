@@ -1,94 +1,92 @@
-<?php echo $this->include('layouts/header'); ?>
+<?php require __DIR__ . '/../layouts/header.php'; ?>
 
-<div class="dashboard-layout">
-    <aside class="dashboard-sidebar">
-        <div class="user-profile-widget">
-            <img src="https://i.pravatar.cc/150?u=<?php echo $_SESSION['user']['id'] ?? 0; ?>" alt="User Avatar">
-            <h4><?php echo htmlspecialchars($_SESSION['user']['name'] ?? 'User'); ?></h4>
-            <p><?php echo htmlspecialchars($_SESSION['user']['email'] ?? ''); ?></p>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="<?php echo BASE_URL; ?>/dashboard" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="<?php echo BASE_URL; ?>/profile"><i class="fas fa-user-circle"></i> My Profile</a></li>
-                <li><a href="<?php echo BASE_URL; ?>/recipes/create"><i class="fas fa-plus-circle"></i> Create Recipe</a></li>
-                <li><a href="<?php echo BASE_URL; ?>/recipes"><i class="fas fa-book"></i> My Recipes</a></li>
-                <li><a href="<?php echo BASE_URL; ?>/categories"><i class="fas fa-folder"></i> Categories</a></li>
-                <li><a href="<?php echo BASE_URL; ?>/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-            </ul>
-        </nav>
-    </aside>
-
-    <main class="dashboard-main">
-        <div class="dashboard-header">
-            <h1>Welcome back, <?php echo htmlspecialchars($_SESSION['user']['name'] ?? 'Chef'); ?>!</h1>
-            <p>Here's a snapshot of your culinary activity.</p>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-card fade-in-up">
-                <i class="fas fa-utensils"></i>
-                <div>
-                    <div class="value"><?php echo $totalRecipes ?? 0; ?></div>
-                    <div class="label">Recipes Published</div>
-                </div>
-            </div>
-            <div class="stat-card fade-in-up" style="animation-delay: 0.1s;">
-                <i class="fas fa-folder"></i>
-                <div>
-                    <div class="value"><?php echo $totalCategories ?? 0; ?></div>
-                    <div class="label">Categories</div>
-                </div>
-            </div>
-            <div class="stat-card fade-in-up" style="animation-delay: 0.2s;">
-                <i class="fas fa-clock"></i>
-                <div>
-                    <div class="value"><?php echo $totalTime ?? 0; ?>m</div>
-                    <div class="label">Total Cooking Time</div>
-                </div>
-            </div>
-            <div class="stat-card fade-in-up" style="animation-delay: 0.3s;">
-                <i class="fas fa-fire"></i>
-                <div>
-                    <div class="value"><?php echo $easyRecipes ?? 0; ?></div>
-                    <div class="label">Easy Recipes</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="dashboard-section">
-            <h2>Your Recent Recipes</h2>
-            <?php if (empty($recentRecipes)): ?>
-                <div class="card" style="padding: 3rem; text-align: center; margin-top: 1.5rem;">
-                    <i class="fas fa-utensils" style="font-size: 3rem; color: var(--text-light); margin-bottom: 1rem;"></i>
-                    <p style="color: var(--text-light);">No recipes yet. Start by creating your first recipe!</p>
-                    <a href="<?php echo BASE_URL; ?>/recipes/create" class="btn btn-primary" style="margin-top: 1rem;">Create Recipe</a>
-                </div>
-            <?php else: ?>
-                <div class="grid grid-cols-3" style="margin-top: 1.5rem;">
-                    <?php foreach ($recentRecipes as $recipe): ?>
-                        <div class="card fade-in-up">
-                            <?php if (!empty($recipe['image_url'])): ?>
-                                <img src="<?php echo htmlspecialchars($recipe['image_url']); ?>" alt="<?php echo htmlspecialchars($recipe['name']); ?>" class="card-img">
-                            <?php else: ?>
-                                <div style="height: 200px; background: var(--beige); display: flex; align-items: center; justify-content: center;">
-                                    <i class="fas fa-utensils" style="font-size: 3rem; color: var(--text-light);"></i>
-                                </div>
-                            <?php endif; ?>
-                            <div class="card-body">
-                                <h3 class="card-title"><?php echo htmlspecialchars($recipe['name']); ?></h3>
-                                <p class="card-text"><?php echo htmlspecialchars(substr($recipe['description'] ?? '', 0, 100)); ?>...</p>
-                            </div>
-                            <div class="card-footer">
-                                <span><i class="fas fa-clock"></i> <?php echo ($recipe['preparation_time'] + $recipe['cooking_time']); ?> min</span>
-                                <a href="<?php echo BASE_URL; ?>/recipes/edit?id=<?php echo $recipe['id']; ?>">Edit</a>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
-        </div>
-    </main>
+<!-- HERO GREETING -->
+<div class="dashboard-hero">
+  <h1>Welcome back, <?php echo htmlspecialchars(explode(' ', $_SESSION['user']['name'] ?? 'Chef')[0]); ?> 👨‍🍳</h1>
+  <p>Here's a snapshot of your culinary universe.</p>
 </div>
 
-<?php echo $this->include('layouts/footer'); ?>
+<div class="page-body">
+
+  <!-- STATS -->
+  <div class="grid grid-4 mb-2" style="margin-bottom:2.5rem;">
+    <div class="stat-card fade-up">
+      <div class="stat-icon"><i class="fas fa-utensils"></i></div>
+      <div><div class="stat-num"><?php echo $totalRecipes ?? 0; ?></div><div class="stat-label">Recipes</div></div>
+      <i class="fas fa-utensils bg-icon"></i>
+    </div>
+    <div class="stat-card fade-up" style="animation-delay:.1s">
+      <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+      <div><div class="stat-num"><?php echo $totalCategories ?? 0; ?></div><div class="stat-label">Categories</div></div>
+      <i class="fas fa-layer-group bg-icon"></i>
+    </div>
+    <div class="stat-card fade-up" style="animation-delay:.2s">
+      <div class="stat-icon"><i class="fas fa-clock"></i></div>
+      <div><div class="stat-num"><?php echo $totalTime ?? 0; ?><small style="font-size:1rem;">m</small></div><div class="stat-label">Cooking Time</div></div>
+      <i class="fas fa-clock bg-icon"></i>
+    </div>
+    <div class="stat-card fade-up" style="animation-delay:.3s">
+      <div class="stat-icon"><i class="fas fa-star"></i></div>
+      <div><div class="stat-num"><?php echo $easyRecipes ?? 0; ?></div><div class="stat-label">Easy Recipes</div></div>
+      <i class="fas fa-star bg-icon"></i>
+    </div>
+  </div>
+
+  <!-- DISCOVER BANNER -->
+  <div class="discover-banner fade-up" style="animation-delay:.4s">
+    <div class="discover-banner-bg"></div>
+    <div class="discover-banner-overlay"></div>
+    <div class="discover-banner-content">
+      <div class="hero-tag" style="margin-bottom:.75rem;"><i class="fas fa-compass"></i> Community</div>
+      <h2>Discover the Atlas Mountains</h2>
+      <p>Explore the hidden culinary secrets of Berber villages.</p>
+      <a href="<?php echo BASE_URL; ?>/recipes/discover" class="btn btn-gold">
+        <i class="fas fa-compass"></i> Explore Recipes
+      </a>
+    </div>
+  </div>
+
+  <!-- RECENT RECIPES -->
+  <div class="dashboard-section fade-up" style="animation-delay:.5s">
+    <div class="section-header">
+      <h2>Your Recent Recipes</h2>
+      <a href="<?php echo BASE_URL; ?>/recipes" class="btn btn-outline btn-sm">View All</a>
+    </div>
+
+    <?php if (empty($recentRecipes)): ?>
+      <div class="empty-state">
+        <i class="fas fa-utensils"></i>
+        <h3>No recipes yet</h3>
+        <p>Start sharing your culinary creations with the world.</p>
+        <a href="<?php echo BASE_URL; ?>/recipes/create" class="btn btn-gold"><i class="fas fa-plus"></i> Create Recipe</a>
+      </div>
+    <?php else: ?>
+      <div class="grid grid-auto">
+        <?php foreach ($recentRecipes as $recipe): ?>
+          <div class="recipe-card">
+            <?php if (!empty($recipe['image_url'])): ?>
+              <img src="<?php echo htmlspecialchars($recipe['image_url']); ?>" class="recipe-card-img" alt="<?php echo htmlspecialchars($recipe['name']); ?>">
+            <?php else: ?>
+              <div class="recipe-card-img-placeholder"><i class="fas fa-bowl-food"></i></div>
+            <?php endif; ?>
+            <div class="recipe-badge">
+              <span class="badge"><?php echo htmlspecialchars($recipe['difficulty'] ?? 'Easy'); ?></span>
+              <span class="badge"><?php echo ($recipe['preparation_time'] ?? 0) + ($recipe['cooking_time'] ?? 0); ?>m</span>
+            </div>
+            <div class="recipe-card-body">
+              <div class="recipe-card-title"><?php echo htmlspecialchars($recipe['name']); ?></div>
+              <div class="recipe-card-desc"><?php echo htmlspecialchars(substr($recipe['description'] ?? '', 0, 80)); ?>...</div>
+            </div>
+            <div class="recipe-card-actions">
+              <a href="<?php echo BASE_URL; ?>/recipes/show?recipe_id=<?php echo $recipe['id']; ?>" class="btn btn-outline btn-sm" style="flex:1;justify-content:center;">View</a>
+              <a href="<?php echo BASE_URL; ?>/recipes/edit?id=<?php echo $recipe['id']; ?>" class="btn btn-ghost btn-sm btn-icon"><i class="fas fa-pen"></i></a>
+            </div>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    <?php endif; ?>
+  </div>
+
+</div><!-- /page-body -->
+
+<?php require __DIR__ . '/../layouts/footer.php'; ?>
