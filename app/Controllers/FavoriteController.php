@@ -5,12 +5,10 @@ require_once __DIR__ . "/../Models/RecipeModel.php";
 
 class FavoriteController extends Controller {
     private $favoriteModel;
-    private $recipeModel;
     
     public function __construct() {
         parent::__construct();
         $this->favoriteModel = new FavoriteModel();
-        $this->recipeModel = new RecipeModel();
     }
 
     public function index() {

@@ -69,7 +69,7 @@
         <a href="<?php echo BASE_URL; ?>/categories" class="btn btn-outline btn-sm" style="justify-content:flex-start;">
           <i class="fas fa-layer-group" style="color:var(--gold);"></i> My Categories
         </a>
-        <a href="<?php echo BASE_URL; ?>/recipes/discover" class="btn btn-outline btn-sm" style="justify-content:flex-start;">
+        <a href="<?php echo BASE_URL; ?>/favorites" class="btn btn-outline btn-sm" style="justify-content:flex-start;">
           <i class="fas fa-star" style="color:var(--gold);"></i> Favorites
         </a>
         <a href="<?php echo BASE_URL; ?>/logout" class="btn btn-danger btn-sm" style="justify-content:flex-start;margin-top:.5rem;"

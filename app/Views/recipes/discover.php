@@ -6,29 +6,36 @@
     <div class="sub">Explore recipes from the community</div>
   </div>
   <div class="header-right">
-    <div class="search-wrap">
-      <i class="fas fa-search"></i>
-      <input type="search" placeholder="Search recipes..." oninput="filterCards(this.value,'recipe-disc')">
-    </div>
-    <a href="<?php echo BASE_URL; ?>/recipes/create" class="btn btn-gold">
+    <a href="<?php echo BASE_URL; ?>/recipes/create" class="btn btn-gold" style="margin-left:1rem;">
       <i class="fas fa-plus"></i> Share Recipe
     </a>
   </div>
 </div>
 
 <div class="page-body">
-
-  <!-- Category filter pills -->
-  <?php if (!empty($categories)): ?>
-    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem;">
-      <button class="badge badge-gold" onclick="filterCategory('')" style="border:none;cursor:pointer;padding:.4rem .9rem;font-size:.75rem;">All</button>
+  <!-- Discover controls: page-level filters -->
+  <div class="discover-controls" style="display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0 1.5rem;">
+    <input id="ds-name" class="form-control" type="text" placeholder="Search by name" style="min-width:260px;">
+    <select id="ds-cat" class="form-control" style="min-width:200px;">
+      <option value="">All Categories</option>
       <?php foreach ($categories as $cat): ?>
-        <button class="badge" onclick="filterCategory('<?php echo htmlspecialchars($cat['name']); ?>')"
-                style="border:none;cursor:pointer;padding:.4rem .9rem;font-size:.75rem;background:var(--surface-2);">
-          <?php echo htmlspecialchars($cat['name']); ?>
-        </button>
+        <option value="<?php echo htmlspecialchars($cat['name']); ?>"><?php echo htmlspecialchars($cat['name']); ?></option>
       <?php endforeach; ?>
-    </div>
+    </select>
+    <button class="btn btn-outline" onclick="ds_search()">Search</button>
+    <button class="btn btn-outline" onclick="ds_applyFilters()">Apply Filters</button>
+    <button class="btn btn-outline" onclick="ds_clearFilters()">Clear</button>
+  </div>
+
+  <?php if (!empty($categories)): ?>
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem;">
+    <button class="badge badge-gold" onclick="ds_clearFilters()" style="border:none;cursor:pointer;padding:.4rem .9rem;font-size:.75rem;">All</button>
+    <?php foreach ($categories as $cat): ?>
+      <button class="badge" onclick="document.getElementById('ds-cat').value='<?php echo htmlspecialchars($cat['name']); ?>'; ds_applyFilters();" style="border:none;cursor:pointer;padding:.4rem .9rem;font-size:.75rem;background:var(--surface-2);">
+        <?php echo htmlspecialchars($cat['name']); ?>
+      </button>
+    <?php endforeach; ?>
+  </div>
   <?php endif; ?>
 
   <?php if (empty($recipes)): ?>
@@ -70,73 +77,72 @@
           </div>
 
           <div class="recipe-card-actions">
-            <a href="<?php echo BASE_URL; ?>/recipes/show?recipe_id=<?php echo $recipe['id']; ?>"
-               class="btn btn-outline btn-sm" style="flex:1;justify-content:center;">
+            <a href="<?php echo BASE_URL; ?>/recipes/show?recipe_id=<?php echo $recipe['id']; ?>" class="btn btn-outline btn-sm" style="flex:1;justify-content:center;">
               <i class="fas fa-eye"></i> View
             </a>
-            <button class="btn <?php echo $isFavorited ? 'btn-gold' : 'btn-ghost'; ?> btn-sm btn-icon favorite-btn" 
-                    data-recipe-id="<?php echo $recipe['id']; ?>" 
-                    title="<?php echo $isFavorited ? 'Remove from favorites' : 'Add to favorites'; ?>"
-                    onclick="toggleFavorite(this)">
+            <button class="btn <?php echo $isFavorited ? 'btn-gold' : 'btn-ghost'; ?> btn-sm btn-icon" 
+                    title="<?php echo $isFavorited ? 'Remove from favorites' : 'Add to favorites'; ?>" 
+                    onclick="toggleFavorite(this)" 
+                    data-recipe-id="<?php echo $recipe['id']; ?>">
               <i class="fas fa-star" style="<?php echo $isFavorited ? 'color:var(--gold);' : ''; ?>"></i>
             </button>
           </div>
-
         </div>
       <?php endforeach; ?>
     </div>
   <?php endif; ?>
-
 </div>
 
 <script>
-function filterCards(q, attr) {
-  const lower = q.toLowerCase();
-  document.querySelectorAll('[data-' + attr + ']').forEach(card => {
-    card.style.display = card.innerText.toLowerCase().includes(lower) ? '' : 'none';
-  });
-}
-
-function filterCategory(cat) {
+function ds_search() {
+  const name = (document.getElementById('ds-name')?.value || '').toLowerCase();
   document.querySelectorAll('[data-recipe-disc]').forEach(card => {
-    const cardCat = card.getAttribute('data-category') || '';
-    card.style.display = (!cat || cardCat === cat) ? '' : 'none';
+    const t = card.querySelector('.recipe-card-title')?.innerText.toLowerCase() ?? '';
+    card.style.display = t.includes(name) ? '' : 'none';
   });
 }
-
+function ds_applyFilters() {
+  const name = (document.getElementById('ds-name')?.value || '').toLowerCase();
+  const category = document.getElementById('ds-cat')?.value || '';
+  document.querySelectorAll('[data-recipe-disc]').forEach(card => {
+    const t = card.querySelector('.recipe-card-title')?.innerText.toLowerCase() ?? '';
+    const cat = card.getAttribute('data-category') ?? '';
+    const nameOk = t.includes(name);
+    const catOk = category === '' || cat === category;
+    card.style.display = (nameOk && catOk) ? '' : 'none';
+  });
+}
+function ds_clearFilters() {
+  const nameEl = document.getElementById('ds-name');
+  const catEl = document.getElementById('ds-cat');
+  if (nameEl) nameEl.value = '';
+  if (catEl) catEl.value = '';
+  document.querySelectorAll('[data-recipe-disc]').forEach(card => card.style.display = '');
+}
 function toggleFavorite(btn) {
   const recipeId = btn.getAttribute('data-recipe-id');
-  const icon = btn.querySelector('i');
-  
   fetch('<?php echo BASE_URL; ?>/favorites/toggle', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: 'recipe_id=' + recipeId
-  })
-  .then(response => response.json())
-  .then(data => {
+  }).then(r => r.json()).then(data => {
     if (data.success) {
+      const icon = btn.querySelector('i');
       if (data.favorited) {
+        icon.style.color = 'var(--gold)';
         btn.classList.remove('btn-ghost');
         btn.classList.add('btn-gold');
-        icon.style.color = 'var(--gold)';
         btn.setAttribute('title', 'Remove from favorites');
       } else {
+        icon.style.color = '';
         btn.classList.remove('btn-gold');
         btn.classList.add('btn-ghost');
-        icon.style.color = '';
         btn.setAttribute('title', 'Add to favorites');
       }
     } else {
       alert(data.message || 'Please login to add favorites');
       window.location.href = '<?php echo BASE_URL; ?>/auth/login';
     }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    alert('Failed to update favorite');
   });
 }
 </script>

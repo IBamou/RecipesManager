@@ -31,7 +31,7 @@
         <a href="<?php echo BASE_URL; ?>/recipes" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI']??'','recipes') !== false ? 'active' : ''); ?>">
           <i class="fas fa-book-open"></i> Recipes
         </a>
-        <a href="<?php echo BASE_URL; ?>/categories" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI']??'','categor') !== false ? 'active' : ''); ?>">
+        <a href="<?php echo BASE_URL; ?>/categories" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI']??'','/categories') !== false ? 'active' : ''); ?>">
           <i class="fas fa-layer-group"></i> Categories
         </a>
         <a href="<?php echo BASE_URL; ?>/recipes/discover" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI']??'','discover') !== false ? 'active' : ''); ?>">

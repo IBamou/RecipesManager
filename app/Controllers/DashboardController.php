@@ -21,9 +21,10 @@ class DashboardController extends Controller {
         $recentRecipes = $this->recipeModel->getRecipesByUser($userId);
         $recentRecipes = array_slice($recentRecipes, 0, 5);
         
+        $allRecipes = $this->recipeModel->getRecipesByUser($userId);
         $easyRecipes = 0;
         $totalTime = 0;
-        foreach ($recentRecipes as $recipe) {
+        foreach ($allRecipes as $recipe) {
             if (strtolower($recipe['difficulty']) === 'easy') {
                 $easyRecipes++;
             }
