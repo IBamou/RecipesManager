@@ -22,29 +22,37 @@
     </div>
 
     <!-- Nav -->
+    <?php
+    // Exact-path active detection helper
+    $uri_path = isset($_SERVER['REQUEST_URI']) ? parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) : '';
+    $uri_path = rtrim($uri_path, '/');
+    function is_active_nav($target, $path) {
+      return $path === $target;
+    }
+    ?>
     <nav class="sidebar-nav">
       <div class="nav-section">
         <div class="nav-section-title">Menu</div>
-        <a href="<?php echo BASE_URL; ?>/dashboard" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI']??'','dashboard') !== false ? 'active' : ''); ?>">
+        <a href="<?php echo BASE_URL; ?>/dashboard" class="nav-link <?php echo (is_active_nav('/dashboard', $uri_path) ? 'active' : ''); ?>">
           <i class="fas fa-house"></i> Dashboard
         </a>
-        <a href="<?php echo BASE_URL; ?>/recipes" class="nav-link <?php echo ($_SERVER['REQUEST_URI'] ?? '' === '/recipesManager/recipes' || $_SERVER['REQUEST_URI'] ?? '' === '/recipes' ? 'active' : ''); ?>">
+        <a href="<?php echo BASE_URL; ?>/recipes" class="nav-link <?php echo (is_active_nav('/recipes', $uri_path) ? 'active' : ''); ?>">
           <i class="fas fa-book-open"></i> Recipes
         </a>
-        <a href="<?php echo BASE_URL; ?>/categories" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI']??'','/categories') !== false ? 'active' : ''); ?>">
+        <a href="<?php echo BASE_URL; ?>/categories" class="nav-link <?php echo (is_active_nav('/categories', $uri_path) ? 'active' : ''); ?>">
           <i class="fas fa-layer-group"></i> Categories
         </a>
-        <a href="<?php echo BASE_URL; ?>/recipes/discover" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI']??'','discover') !== false ? 'active' : ''); ?>">
+        <a href="<?php echo BASE_URL; ?>/recipes/discover" class="nav-link <?php echo (is_active_nav('/recipes/discover', $uri_path) ? 'active' : ''); ?>">
           <i class="fas fa-compass"></i> Discover
         </a>
-        <a href="<?php echo BASE_URL; ?>/favorites" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI']??'','favorites') !== false ? 'active' : ''); ?>">
+        <a href="<?php echo BASE_URL; ?>/favorites" class="nav-link <?php echo (is_active_nav('/favorites', $uri_path) ? 'active' : ''); ?>">
           <i class="fas fa-star"></i> Favorites
         </a>
       </div>
 
       <div class="nav-section">
         <div class="nav-section-title">Account</div>
-        <a href="<?php echo BASE_URL; ?>/profile" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI']??'','profile') !== false ? 'active' : ''); ?>">
+        <a href="<?php echo BASE_URL; ?>/profile" class="nav-link <?php echo (is_active_nav('/profile', $uri_path) ? 'active' : ''); ?>">
           <i class="fas fa-user-circle"></i> Profile
         </a>
         <a href="<?php echo BASE_URL; ?>/logout" class="nav-link" style="color:#e74c3c;" onclick="return confirm('Log out?');">
