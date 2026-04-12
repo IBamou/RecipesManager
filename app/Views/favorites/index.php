@@ -2,32 +2,32 @@
 
 <div class="page-header">
   <div>
-    <h1>My Recipes</h1>
-    <div class="sub">Your personal culinary collection</div>
+    <h1><i class="fas fa-star" style="color:var(--gold);margin-right:.5rem;"></i> My Favorites</h1>
+    <div class="sub">Your personal collection of beloved recipes</div>
   </div>
   <div class="header-right">
     <form method="GET" action="" style="display:flex;gap:0;">
-      <input type="search" name="q" placeholder="Search recipes..." value="<?php echo htmlspecialchars($_GET['q'] ?? ''); ?>" style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px 0 0 8px;color:var(--text);padding:.6rem .8rem;font-size:.85rem;width:200px;">
+      <input type="search" name="q" placeholder="Search favorites..." value="<?php echo htmlspecialchars($_GET['q'] ?? ''); ?>" style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px 0 0 8px;color:var(--text);padding:.6rem .8rem;font-size:.85rem;width:200px;">
       <button type="submit" class="btn btn-gold btn-sm" style="border-radius:0 8px 8px 0;">
         <i class="fas fa-search"></i>
       </button>
     </form>
-    <a href="<?php echo BASE_URL; ?>/recipes/create" class="btn btn-gold">
-      <i class="fas fa-plus"></i> New Recipe
+    <a href="<?php echo BASE_URL; ?>/discover" class="btn btn-outline btn-sm">
+      <i class="fas fa-compass"></i> Discover More
     </a>
   </div>
 </div>
 
 <div class="page-body">
-  <?php if (empty($recipes)): ?>
+  <?php if (empty($favorites)): ?>
     <div class="grid"><div class="empty-state">
-      <i class="fas fa-book-open"></i>
-      <h3>No recipes yet</h3>
-      <p>Start building your cookbook by publishing your first recipe.</p>
+      <i class="fas fa-star"></i>
+      <h3>No favorites yet</h3>
+      <p>Start exploring and save recipes you love by clicking the star icon.</p>
     </div></div>
   <?php else: ?>
     <div class="grid grid-auto">
-      <?php foreach ($recipes as $i => $recipe): ?>
+      <?php foreach ($favorites as $i => $recipe): ?>
         <div class="recipe-card fade-up" data-recipe-card-item style="animation-delay:<?php echo $i * 0.07; ?>s">
 
           <?php if (!empty($recipe['image_url'])): ?>
@@ -56,13 +56,13 @@
             <a href="<?php echo BASE_URL; ?>/recipes/show?recipe_id=<?php echo $recipe['id']; ?>" class="btn btn-gold btn-sm" style="flex:1;justify-content:center;">
               <i class="fas fa-eye"></i> View
             </a>
-            <a href="<?php echo BASE_URL; ?>/recipes/edit?id=<?php echo $recipe['id']; ?>" class="btn btn-gold btn-sm btn-icon" title="Edit" style="background:var(--gold);color:#120d00;">
-              <i class="fas fa-pen"></i>
-            </a>
-            <form method="POST" action="<?php echo BASE_URL; ?>/recipes/delete" onsubmit="return confirm('Delete this recipe permanently?');">
-              <input type="hidden" name="recipe_id" value="<?php echo $recipe['id']; ?>">
-              <button type="submit" class="btn btn-danger btn-sm btn-icon" title="Delete"><i class="fas fa-trash"></i></button>
-            </form>
+            <button class="btn btn-gold btn-sm btn-icon favorite-btn" 
+                    data-recipe-id="<?php echo $recipe['id']; ?>" 
+                    title="Remove from favorites"
+                    onclick="toggleFavorite(this)"
+                    style="background:var(--gold);color:#120d00;">
+              <i class="fas fa-star"></i>
+            </button>
           </div>
 
         </div>
@@ -70,5 +70,54 @@
     </div>
   <?php endif; ?>
 </div>
+
+<script>
+function toggleFavorite(btn) {
+  const recipeId = btn.getAttribute('data-recipe-id');
+  
+  fetch('<?php echo BASE_URL; ?>/favorites/toggle', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'recipe_id=' + recipeId
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      const card = btn.closest('.recipe-card');
+      if (data.favorited) {
+        btn.querySelector('i').style.color = 'var(--gold)';
+      } else {
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.8)';
+        setTimeout(() => {
+          card.remove();
+          checkEmptyState();
+        }, 300);
+      }
+    } else {
+      alert(data.message || 'Something went wrong');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Failed to update favorite');
+  });
+}
+
+function checkEmptyState() {
+  const grid = document.querySelector('.grid');
+  if (grid && grid.querySelectorAll('.recipe-card').length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-star"></i>
+        <h3>No favorites yet</h3>
+        <p>Start exploring and save recipes you love by clicking the star icon.</p>
+      </div>
+    `;
+  }
+}
+</script>
 
 <?php require __DIR__ . '/../layouts/footer.php'; ?>

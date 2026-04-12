@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/Controller.php";
 require_once __DIR__ . "/../Models/CategoryModel.php";
+require_once __DIR__ . "/../Models/RecipeModel.php";
 
 class CategoryController extends Controller {
     private $categoryModel;
@@ -12,8 +13,9 @@ class CategoryController extends Controller {
 
     public function index() {
         $userId = $_SESSION['user']['id'] ?? 0;
-        $categories = $this->categoryModel->getCategoriesByUser($userId);
-        include __DIR__ . "/../Views/category/index.php";
+        $search = trim($_GET['q'] ?? '');
+        $categories = $this->categoryModel->getCategoriesByUser($userId, $search);
+        include __DIR__ . "/../Views/categories/index.php";
     }
 
     public function show() {
@@ -24,7 +26,7 @@ class CategoryController extends Controller {
         $recipeModel = new RecipeModel();
         $recipes = $recipeModel->getRecipesByCategory($category_id, $_SESSION['user']['id'] ?? 0);
         
-        include __DIR__ . "/../Views/category/show.php";
+        include __DIR__ . "/../Views/categories/show.php";
     }
 
     public function create() {
@@ -40,7 +42,7 @@ class CategoryController extends Controller {
             header("Location: " . $this->baseUrl . "/categories");
             exit();
         }
-        include __DIR__ . "/../Views/category/create.php";
+        include __DIR__ . "/../Views/categories/create.php";
     }
 
     public function edit() {
@@ -56,7 +58,7 @@ class CategoryController extends Controller {
         }
         $category_id = $_GET['id'] ?? null;
         $category = $this->categoryModel->getCategoryById($category_id);
-        include __DIR__ . '/../Views/category/edit.php';
+        include __DIR__ . '/../Views/categories/edit.php';
     }
 
     public function delete() {

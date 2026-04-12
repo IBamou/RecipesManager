@@ -31,15 +31,28 @@ class RecipeModel extends Database {
         }
     }
 
-    public function getRecipesByUser(int $userId) {
+    public function getRecipesByUser(int $userId, string $search = '') {
         try {
             $sql = 'SELECT recipes.*, categories.name as category_name 
                     FROM recipes 
                     LEFT JOIN categories ON recipes.category_id = categories.id 
-                    WHERE recipes.user_id = :user_id 
-                    ORDER BY recipes.created_at DESC';
+                    WHERE recipes.user_id = :user_id';
+            
+            if (!empty($search)) {
+                $sql .= ' AND (recipes.name LIKE :search OR recipes.description LIKE :search2)';
+            }
+            
+            $sql .= ' ORDER BY recipes.created_at DESC';
+            
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            
+            if (!empty($search)) {
+                $searchTerm = '%' . $search . '%';
+                $stmt->bindParam(':search', $searchTerm);
+                $stmt->bindParam(':search2', $searchTerm);
+            }
+            
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {

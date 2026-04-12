@@ -71,7 +71,7 @@ class AuthController extends Controller {
 
     public function logout() {
         session_destroy();
-        header("Location: " . $this->baseUrl . "/login");
+        header("Location: " . $this->baseUrl . "/auth/login");
         exit;
     }
 }

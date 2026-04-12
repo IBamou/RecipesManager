@@ -13,6 +13,8 @@ class ProfileController extends Controller {
     public function index() {
         $userId = $_SESSION['user']['id'] ?? 0;
         
+        $user = $this->userModel->findById($userId);
+        
         require_once __DIR__ . '/../Models/RecipeModel.php';
         require_once __DIR__ . '/../Models/CategoryModel.php';
         
@@ -28,10 +30,12 @@ class ProfileController extends Controller {
     public function update() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = $_POST['name'] ?? '';
+            $bio = $_POST['bio'] ?? '';
+            $birthday = $_POST['birthday'] ?? '';
             $userId = $_SESSION['user']['id'] ?? 0;
             
             if (!empty($name)) {
-                $this->userModel->updateName($userId, $name);
+                $this->userModel->updateProfile($userId, $name, $bio, $birthday);
                 $_SESSION['user']['name'] = $name;
             }
         }

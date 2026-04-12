@@ -8,6 +8,7 @@ require_once __DIR__ . '/app/Controllers/CategoryController.php';
 require_once __DIR__ . '/app/Controllers/RecipeController.php';
 require_once __DIR__ . '/app/Controllers/DashboardController.php';
 require_once __DIR__ . '/app/Controllers/ProfileController.php';
+require_once __DIR__ . '/app/Controllers/FavoriteController.php';
 
 $url = (isset($_GET['url'])) && !empty($_GET['url']) ? $_GET['url'] : '/';
 
@@ -48,7 +49,7 @@ switch ($url) {
         (new AuthController())->logout();
         break;
 
-    case 'recipes/discover':
+    case 'discover':
         requireLogin();
         (new RecipeController())->discover();
         break;
@@ -116,6 +117,16 @@ switch ($url) {
     case 'recipes/delete':
         requireLogin();
         (new RecipeController())->delete();
+        break;
+
+    case 'favorites':
+        requireLogin();
+        (new FavoriteController())->index();
+        break;
+
+    case 'favorites/toggle':
+        requireLogin();
+        (new FavoriteController())->toggle();
         break;
 
     default:

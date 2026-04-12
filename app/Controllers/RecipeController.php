@@ -1,43 +1,63 @@
 <?php
 require_once __DIR__ . "/Controller.php";
 require_once __DIR__ . "/../Models/RecipeModel.php";
+require_once __DIR__ . "/../Models/FavoriteModel.php";
+require_once __DIR__ . "/../Models/UserModel.php";
 
 class RecipeController extends Controller {
     private $recipeModel;
+    private $favoriteModel;
     
     public function __construct() {
         parent::__construct();
         $this->recipeModel = new RecipeModel();
+        $this->favoriteModel = new FavoriteModel();
     }
 
     public function index() {
         $userId = $_SESSION['user']['id'] ?? 0;
-        $recipes = $this->recipeModel->getRecipesByUser($userId);
-        include __DIR__ . "/../Views/recipe/index.php";
+        $search = trim($_GET['q'] ?? '');
+        $recipes = $this->recipeModel->getRecipesByUser($userId, $search);
+        include __DIR__ . "/../Views/recipes/index.php";
     }
 
     public function discover() {
         $recipes = $this->recipeModel->getAllRecipes();
-        include __DIR__ . "/../Views/recipe/discover.php";
+        $categories = $this->recipeModel->getCategories();
+        $userId = $_SESSION['user']['id'] ?? 0;
+        $favoriteIds = $this->favoriteModel->getFavoriteIds($userId);
+        include __DIR__ . "/../Views/recipes/discover.php";
     }
 
     public function show() {
         $recipe_id = $_GET['recipe_id'] ?? null;
         $recipe = $this->recipeModel->getRecipeById($recipe_id);
-        include __DIR__ . "/../Views/recipe/show.php";
+        
+        // Get chef user info
+        $chefUser = null;
+        if (!empty($recipe['user_id'])) {
+            $userModel = new UserModel();
+            $chefUser = $userModel->findById($recipe['user_id']);
+        }
+        
+        include __DIR__ . "/../Views/recipes/show.php";
     }
 
     public function create() {
         $categories = $this->recipeModel->getCategories();
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Join arrays with newlines for storage
+            $ingredients = isset($_POST['ingredients']) ? implode("\n", array_filter($_POST['ingredients'])) : '';
+            $instructions = isset($_POST['steps']) ? implode("\n", array_filter($_POST['steps'])) : '';
+            
             $data = [
                 'name' => $_POST['name'] ?? '',
                 'description' => $_POST['description'] ?? '',
                 'user_id' => $_SESSION['user']['id'] ?? 0,
                 'category_id' => $_POST['category_id'] ?? null,
-                'ingredients' => $_POST['ingredients'] ?? '',
-                'instructions' => $_POST['instructions'] ?? '',
+                'ingredients' => $ingredients,
+                'instructions' => $instructions,
                 'preparation_time' => $_POST['preparation_time'] ?? 0,
                 'cooking_time' => $_POST['cooking_time'] ?? 0,
                 'difficulty' => $_POST['difficulty'] ?? 'medium',
@@ -47,20 +67,23 @@ class RecipeController extends Controller {
             header("Location: " . $this->baseUrl . "/recipes");
             exit();
         }
-        include __DIR__ . "/../Views/recipe/create.php";
+        include __DIR__ . "/../Views/recipes/create.php";
     }
 
     public function edit() {
         $categories = $this->recipeModel->getCategories();
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $ingredients = isset($_POST['ingredients']) ? implode("\n", array_filter($_POST['ingredients'])) : '';
+            $instructions = isset($_POST['steps']) ? implode("\n", array_filter($_POST['steps'])) : '';
+            
             $data = [
                 'id' => $_POST['recipe_id'] ?? 0,
                 'name' => $_POST['name'] ?? '',
                 'description' => $_POST['description'] ?? '',
                 'category_id' => $_POST['category_id'] ?? null,
-                'ingredients' => $_POST['ingredients'] ?? '',
-                'instructions' => $_POST['instructions'] ?? '',
+                'ingredients' => $ingredients,
+                'instructions' => $instructions,
                 'preparation_time' => $_POST['preparation_time'] ?? 0,
                 'cooking_time' => $_POST['cooking_time'] ?? 0,
                 'difficulty' => $_POST['difficulty'] ?? 'medium',
@@ -72,7 +95,7 @@ class RecipeController extends Controller {
         }
         $recipe_id = $_GET['id'] ?? null;
         $recipe = $this->recipeModel->getRecipeById($recipe_id);
-        include __DIR__ . '/../Views/recipe/edit.php';
+        include __DIR__ . '/../Views/recipes/edit.php';
     }
 
     public function delete() {

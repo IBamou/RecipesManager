@@ -9,7 +9,7 @@ class UserModel extends Database {
 
     public function getUsers() {
         try {
-            $query = 'SELECT id, name, email, created_at FROM users ORDER BY created_at DESC';
+            $query = 'SELECT id, name, email, bio, birthday, created_at FROM users ORDER BY created_at DESC';
             $stmt = $this->db->prepare($query);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -21,7 +21,7 @@ class UserModel extends Database {
     public function findByEmail(string $email) {
         try {
             if ($email) {
-                $query = 'SELECT id, name, email, password, created_at FROM users WHERE email = :email';
+                $query = 'SELECT id, name, email, password, bio, birthday, created_at FROM users WHERE email = :email';
                 $stmt = $this->db->prepare($query);
                 $stmt->bindParam(':email', $email);
                 $stmt->execute();
@@ -34,7 +34,7 @@ class UserModel extends Database {
 
     public function findByName(string $name) {
         try {
-            $query = 'SELECT id, name, email, password, created_at FROM users WHERE name = :name';
+            $query = 'SELECT id, name, email, password, bio, birthday, created_at FROM users WHERE name = :name';
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':name', $name);
             $stmt->execute();
@@ -46,7 +46,7 @@ class UserModel extends Database {
 
     public function findById(int $id) {
         try {
-            $query = 'SELECT id, name, email, created_at FROM users WHERE id = :id';
+            $query = 'SELECT id, name, email, bio, birthday, created_at FROM users WHERE id = :id';
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
@@ -105,6 +105,21 @@ class UserModel extends Database {
             $query = 'UPDATE users SET name = :name WHERE id = :id';
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+    
+    public function updateProfile(int $id, string $name, string $bio = '', string $birthday = '') {
+        try {
+            $query = 'UPDATE users SET name = :name, bio = :bio, birthday = :birthday WHERE id = :id';
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':bio', $bio);
+            $stmt->bindParam(':birthday', $birthday);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
             return true;

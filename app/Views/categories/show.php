@@ -1,49 +1,74 @@
-<?php echo $this->include('layouts/header'); ?>
+<?php require __DIR__ . '/../layouts/header.php'; ?>
 
-<div class="container">
-    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
-        <a href="<?php echo BASE_URL; ?>/categories" class="btn btn-secondary"><i class="fas fa-arrow-left"></i></a>
-        <h1 style="margin: 0;"><?php echo htmlspecialchars($category['name'] ?? 'Category'); ?></h1>
-    </div>
-
-    <?php if (!empty($category['description'])): ?>
-        <div class="card" style="padding: 1.5rem; margin-bottom: 2rem;">
-            <p style="color: var(--text-light);"><?php echo htmlspecialchars($category['description']); ?></p>
-        </div>
-    <?php endif; ?>
-
-    <?php if (empty($recipes)): ?>
-        <div class="card" style="padding: 4rem; text-align: center;">
-            <i class="fas fa-utensils" style="font-size: 4rem; color: var(--text-light); margin-bottom: 1rem;"></i>
-            <h2>No recipes in this category</h2>
-            <p style="color: var(--text-light); margin: 1rem 0;">Be the first to add a recipe to this category!</p>
-            <a href="<?php echo BASE_URL; ?>/recipes/create" class="btn btn-primary">Add Recipe</a>
-        </div>
-    <?php else: ?>
-        <div class="grid grid-cols-3">
-            <?php foreach ($recipes as $recipe): ?>
-                <div class="card fade-in-up">
-                    <a href="<?php echo BASE_URL; ?>/recipes/show?recipe_id=<?php echo $recipe['id']; ?>">
-                        <?php if (!empty($recipe['image_url'])): ?>
-                            <img src="<?php echo htmlspecialchars($recipe['image_url']); ?>" alt="<?php echo htmlspecialchars($recipe['name']); ?>" class="card-img">
-                        <?php else: ?>
-                            <div style="height: 200px; background: var(--beige); display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-utensils" style="font-size: 3rem; color: var(--text-light);"></i>
-                            </div>
-                        <?php endif; ?>
-                    </a>
-                    <div class="card-body">
-                        <h3 class="card-title"><a href="<?php echo BASE_URL; ?>/recipes/show?recipe_id=<?php echo $recipe['id']; ?>"><?php echo htmlspecialchars($recipe['name']); ?></a></h3>
-                        <p class="card-text"><?php echo htmlspecialchars(substr($recipe['description'] ?? '', 0, 100)); ?>...</p>
-                    </div>
-                    <div class="card-footer">
-                        <span><i class="fas fa-clock"></i> <?php echo ($recipe['preparation_time'] + $recipe['cooking_time']); ?> min</span>
-                        <a href="<?php echo BASE_URL; ?>/recipes/show?recipe_id=<?php echo $recipe['id']; ?>" class="btn btn-secondary btn-sm">View</a>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
+<div class="page-header">
+  <div>
+    <h1><?php echo htmlspecialchars($category['name'] ?? 'Category'); ?></h1>
+    <div class="sub"><?php echo htmlspecialchars($category['description'] ?? ''); ?></div>
+  </div>
+  <div class="header-right">
+    <a href="<?php echo BASE_URL; ?>/categories" class="btn btn-outline btn-sm"><i class="fas fa-arrow-left"></i> Back</a>
+    <a href="<?php echo BASE_URL; ?>/categories/edit?id=<?php echo $category['id']; ?>" class="btn btn-gold btn-sm"><i class="fas fa-pen"></i> Edit</a>
+  </div>
 </div>
 
-<?php echo $this->include('layouts/footer'); ?>
+<div class="page-body">
+
+  <!-- Category hero strip -->
+  <div style="position:relative;height:180px;border-radius:var(--radius);overflow:hidden;margin-bottom:2.5rem;">
+    <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=1200&auto=format&fit=crop&q=80"
+         style="width:100%;height:100%;object-fit:cover;display:block;" alt="">
+    <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.85) 0%,rgba(0,0,0,.3) 100%);display:flex;align-items:center;padding:2rem;">
+      <div>
+        <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:2px;color:var(--gold);margin-bottom:.5rem;">
+          <i class="fas fa-layer-group"></i> Category
+        </div>
+        <h2 style="font-family:var(--font-serif);font-size:2rem;"><?php echo htmlspecialchars($category['name'] ?? ''); ?></h2>
+        <span style="font-size:.82rem;color:rgba(255,255,255,.6);">
+          <i class="fas fa-utensils" style="color:var(--gold);"></i>
+          <?php echo count($recipes ?? []); ?> recipe<?php echo count($recipes ?? []) !== 1 ? 's' : ''; ?> in this collection
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recipes in this category -->
+  <?php if (empty($recipes)): ?>
+    <div class="grid"><div class="empty-state">
+      <i class="fas fa-bowl-food"></i>
+      <h3>No recipes in this category yet</h3>
+      <p>Be the first to add a recipe to <em><?php echo htmlspecialchars($category['name'] ?? ''); ?></em>.</p>
+    </div></div>
+  <?php else: ?>
+    <div class="section-header">
+      <h2>Recipes</h2>
+    </div>
+    <div class="grid grid-auto">
+      <?php foreach ($recipes as $i => $recipe): ?>
+        <div class="recipe-card fade-up" style="animation-delay:<?php echo $i * 0.07; ?>s">
+          <?php if (!empty($recipe['image_url'])): ?>
+            <img src="<?php echo htmlspecialchars($recipe['image_url']); ?>" class="recipe-card-img" alt="<?php echo htmlspecialchars($recipe['name']); ?>">
+          <?php else: ?>
+            <div class="recipe-card-img-placeholder"><i class="fas fa-bowl-food"></i></div>
+          <?php endif; ?>
+          <div class="recipe-badge">
+            <span class="badge"><?php echo htmlspecialchars($recipe['difficulty'] ?? 'Easy'); ?></span>
+            <span class="badge" title="Prep"><i class="fas fa-blender"></i> <?php echo $recipe['preparation_time'] ?? 0; ?></span>
+            <span class="badge" title="Cook"><i class="fas fa-fire-burner"></i> <?php echo $recipe['cooking_time'] ?? 0; ?></span>
+          </div>
+          <div class="recipe-card-body">
+            <div class="recipe-card-title"><?php echo htmlspecialchars($recipe['name']); ?></div>
+            <div class="recipe-card-desc"><?php echo htmlspecialchars(substr($recipe['description'] ?? '', 0, 80)); ?>...</div>
+          </div>
+          <div class="recipe-card-actions" style="padding:0 1rem 1rem;">
+            <a href="<?php echo BASE_URL; ?>/recipes/show?recipe_id=<?php echo $recipe['id']; ?>" class="btn btn-gold btn-sm" style="flex:1;justify-content:center;">
+              <i class="fas fa-eye"></i> View
+            </a>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    </div>
+  <?php endif; ?>
+
+</div>
+
+<?php require __DIR__ . '/../layouts/footer.php'; ?>
