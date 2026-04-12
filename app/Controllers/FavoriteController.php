@@ -13,7 +13,8 @@ class FavoriteController extends Controller {
 
     public function index() {
         $userId = $_SESSION['user']['id'] ?? 0;
-        $favorites = $this->favoriteModel->getUserFavorites($userId);
+        $search = trim($_GET['q'] ?? '');
+        $favorites = $this->favoriteModel->getUserFavorites($userId, $search);
         $favoriteIds = $this->favoriteModel->getFavoriteIds($userId);
         include __DIR__ . "/../Views/favorites/index.php";
     }

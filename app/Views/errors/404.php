@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404 — Page Not Found | Marrakech Food Lovers</title>
+  <title>404 — Page Not Found | Wasafat</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="<?php echo BASE_URL; ?>/public/css/style.css">
 </head>
@@ -38,7 +38,7 @@
 
     <p style="margin-top:3rem;font-size:.78rem;color:var(--muted);">
       <i class="fas fa-map-pin" style="color:var(--gold);"></i>
-      Marrakech Food Lovers &mdash; Crafted with spice & code.
+      Wasafat &mdash; Crafted with spice & code.
     </p>
   </div>
 </div>

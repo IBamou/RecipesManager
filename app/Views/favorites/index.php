@@ -6,11 +6,13 @@
     <div class="sub">Your personal collection of beloved recipes</div>
   </div>
   <div class="header-right">
-    <div class="search-wrap">
-      <i class="fas fa-search"></i>
-      <input type="search" placeholder="Search favorites..." oninput="filterCards(this.value,'recipe-card-item')">
-    </div>
-    <a href="<?php echo BASE_URL; ?>/recipes/discover" class="btn btn-outline btn-sm">
+    <form method="GET" action="" style="display:flex;gap:0;">
+      <input type="search" name="q" placeholder="Search favorites..." value="<?php echo htmlspecialchars($_GET['q'] ?? ''); ?>" style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px 0 0 8px;color:var(--text);padding:.6rem .8rem;font-size:.85rem;width:200px;">
+      <button type="submit" class="btn btn-gold btn-sm" style="border-radius:0 8px 8px 0;">
+        <i class="fas fa-search"></i>
+      </button>
+    </form>
+    <a href="<?php echo BASE_URL; ?>/discover" class="btn btn-outline btn-sm">
       <i class="fas fa-compass"></i> Discover More
     </a>
   </div>
@@ -36,7 +38,8 @@
 
           <div class="recipe-badge">
             <span class="badge"><?php echo htmlspecialchars($recipe['difficulty'] ?? 'Easy'); ?></span>
-            <span class="badge"><?php echo ($recipe['preparation_time'] ?? 0) + ($recipe['cooking_time'] ?? 0); ?>m</span>
+            <span class="badge" title="Prep"><i class="fas fa-blender"></i> <?php echo $recipe['preparation_time'] ?? 0; ?></span>
+            <span class="badge" title="Cook"><i class="fas fa-fire-burner"></i> <?php echo $recipe['cooking_time'] ?? 0; ?></span>
           </div>
 
           <div class="recipe-card-body">
@@ -44,18 +47,20 @@
             <div class="recipe-card-desc"><?php echo htmlspecialchars(substr($recipe['description'] ?? '', 0, 80)); ?>...</div>
             <div class="recipe-card-meta">
               <span><i class="fas fa-layer-group"></i> <?php echo htmlspecialchars($recipe['category_name'] ?? 'Uncategorized'); ?></span>
-              <span><i class="fas fa-clock"></i> <?php echo ($recipe['preparation_time'] ?? 0) + ($recipe['cooking_time'] ?? 0); ?> min</span>
+              <span title="Prep time"><i class="fas fa-blender"></i> <?php echo $recipe['preparation_time'] ?? 0; ?>m</span>
+              <span title="Cook time"><i class="fas fa-fire-burner"></i> <?php echo $recipe['cooking_time'] ?? 0; ?>m</span>
             </div>
           </div>
 
-          <div class="recipe-card-actions">
-            <a href="<?php echo BASE_URL; ?>/recipes/show?recipe_id=<?php echo $recipe['id']; ?>" class="btn btn-outline btn-sm" style="flex:1;justify-content:center;">
+          <div class="recipe-card-actions" style="padding:0 1rem 1rem;">
+            <a href="<?php echo BASE_URL; ?>/recipes/show?recipe_id=<?php echo $recipe['id']; ?>" class="btn btn-gold btn-sm" style="flex:1;justify-content:center;">
               <i class="fas fa-eye"></i> View
             </a>
             <button class="btn btn-gold btn-sm btn-icon favorite-btn" 
                     data-recipe-id="<?php echo $recipe['id']; ?>" 
                     title="Remove from favorites"
-                    onclick="toggleFavorite(this)">
+                    onclick="toggleFavorite(this)"
+                    style="background:var(--gold);color:#120d00;">
               <i class="fas fa-star"></i>
             </button>
           </div>
@@ -67,13 +72,6 @@
 </div>
 
 <script>
-function filterCards(q, attr) {
-  const lower = q.toLowerCase();
-  document.querySelectorAll('[data-' + attr + ']').forEach(card => {
-    card.style.display = card.innerText.toLowerCase().includes(lower) ? '' : 'none';
-  });
-}
-
 function toggleFavorite(btn) {
   const recipeId = btn.getAttribute('data-recipe-id');
   

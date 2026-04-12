@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/Controller.php";
 require_once __DIR__ . "/../Models/CategoryModel.php";
+require_once __DIR__ . "/../Models/RecipeModel.php";
 
 class CategoryController extends Controller {
     private $categoryModel;
@@ -12,7 +13,8 @@ class CategoryController extends Controller {
 
     public function index() {
         $userId = $_SESSION['user']['id'] ?? 0;
-        $categories = $this->categoryModel->getCategoriesByUser($userId);
+        $search = trim($_GET['q'] ?? '');
+        $categories = $this->categoryModel->getCategoriesByUser($userId, $search);
         include __DIR__ . "/../Views/categories/index.php";
     }
 

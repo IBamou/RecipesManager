@@ -6,10 +6,12 @@
     <div class="sub">Your personal culinary collection</div>
   </div>
   <div class="header-right">
-    <div class="search-wrap">
-      <i class="fas fa-search"></i>
-      <input type="search" placeholder="Search recipes..." oninput="filterCards(this.value,'recipe-card-item')">
-    </div>
+    <form method="GET" action="" style="display:flex;gap:0;">
+      <input type="search" name="q" placeholder="Search recipes..." value="<?php echo htmlspecialchars($_GET['q'] ?? ''); ?>" style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px 0 0 8px;color:var(--text);padding:.6rem .8rem;font-size:.85rem;width:200px;">
+      <button type="submit" class="btn btn-gold btn-sm" style="border-radius:0 8px 8px 0;">
+        <i class="fas fa-search"></i>
+      </button>
+    </form>
     <a href="<?php echo BASE_URL; ?>/recipes/create" class="btn btn-gold">
       <i class="fas fa-plus"></i> New Recipe
     </a>
@@ -36,7 +38,8 @@
 
           <div class="recipe-badge">
             <span class="badge"><?php echo htmlspecialchars($recipe['difficulty'] ?? 'Easy'); ?></span>
-            <span class="badge"><?php echo ($recipe['preparation_time'] ?? 0) + ($recipe['cooking_time'] ?? 0); ?>m</span>
+            <span class="badge" title="Prep"><i class="fas fa-blender"></i> <?php echo $recipe['preparation_time'] ?? 0; ?></span>
+            <span class="badge" title="Cook"><i class="fas fa-fire-burner"></i> <?php echo $recipe['cooking_time'] ?? 0; ?></span>
           </div>
 
           <div class="recipe-card-body">
@@ -44,15 +47,16 @@
             <div class="recipe-card-desc"><?php echo htmlspecialchars(substr($recipe['description'] ?? '', 0, 80)); ?>...</div>
             <div class="recipe-card-meta">
               <span><i class="fas fa-layer-group"></i> <?php echo htmlspecialchars($recipe['category_name'] ?? 'Uncategorized'); ?></span>
-              <span><i class="fas fa-clock"></i> <?php echo ($recipe['preparation_time'] ?? 0) + ($recipe['cooking_time'] ?? 0); ?> min</span>
+              <span title="Prep time"><i class="fas fa-blender"></i> <?php echo $recipe['preparation_time'] ?? 0; ?>m</span>
+              <span title="Cook time"><i class="fas fa-fire-burner"></i> <?php echo $recipe['cooking_time'] ?? 0; ?>m</span>
             </div>
           </div>
 
-          <div class="recipe-card-actions">
-            <a href="<?php echo BASE_URL; ?>/recipes/show?recipe_id=<?php echo $recipe['id']; ?>" class="btn btn-outline btn-sm" style="flex:1;justify-content:center;">
+          <div class="recipe-card-actions" style="padding:0 1rem 1rem;">
+            <a href="<?php echo BASE_URL; ?>/recipes/show?recipe_id=<?php echo $recipe['id']; ?>" class="btn btn-gold btn-sm" style="flex:1;justify-content:center;">
               <i class="fas fa-eye"></i> View
             </a>
-            <a href="<?php echo BASE_URL; ?>/recipes/edit?id=<?php echo $recipe['id']; ?>" class="btn btn-ghost btn-sm btn-icon" title="Edit">
+            <a href="<?php echo BASE_URL; ?>/recipes/edit?id=<?php echo $recipe['id']; ?>" class="btn btn-gold btn-sm btn-icon" title="Edit" style="background:var(--gold);color:#120d00;">
               <i class="fas fa-pen"></i>
             </a>
             <form method="POST" action="<?php echo BASE_URL; ?>/recipes/delete" onsubmit="return confirm('Delete this recipe permanently?');">
@@ -66,14 +70,5 @@
     </div>
   <?php endif; ?>
 </div>
-
-<script>
-function filterCards(q, attr) {
-  const lower = q.toLowerCase();
-  document.querySelectorAll('[data-' + attr + ']').forEach(card => {
-    card.style.display = card.innerText.toLowerCase().includes(lower) ? '' : 'none';
-  });
-}
-</script>
 
 <?php require __DIR__ . '/../layouts/footer.php'; ?>

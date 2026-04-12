@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Up — Marrakech Food Lovers</title>
+  <title>Sign Up — Wasafat</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="<?php echo BASE_URL; ?>/public/css/style.css">
 </head>
@@ -27,7 +27,7 @@
 
       <div class="logo">
         <i class="fas fa-fire-flame-curved" style="color:var(--gold);"></i>
-        Marrakech <span>Food</span>
+        Wasafat
       </div>
 
       <h1>Create account</h1>
@@ -43,7 +43,7 @@
       <form method="POST" action="<?php echo BASE_URL; ?>/auth/signup">
         <div class="form-group">
           <label class="form-label" for="name">Full Name</label>
-          <input type="text" id="name" name="name" class="form-control" placeholder="Youssef Al-Fassi" required autofocus>
+          <input type="text" id="name" name="name" class="form-control" placeholder="Enter Your Name" required autofocus>
         </div>
         <div class="form-group">
           <label class="form-label" for="email">Email Address</label>

@@ -45,16 +45,29 @@ class FavoriteModel extends Database {
         }
     }
 
-    public function getUserFavorites(int $userId): array {
+    public function getUserFavorites(int $userId, string $search = ''): array {
         try {
             $sql = 'SELECT recipes.*, categories.name as category_name, favorites.created_at as favorited_at
                     FROM favorites
                     INNER JOIN recipes ON favorites.recipe_id = recipes.id
                     LEFT JOIN categories ON recipes.category_id = categories.id
-                    WHERE favorites.user_id = :user_id
-                    ORDER BY favorites.created_at DESC';
+                    WHERE favorites.user_id = :user_id';
+            
+            if (!empty($search)) {
+                $sql .= ' AND (recipes.name LIKE :search OR recipes.description LIKE :search2)';
+            }
+            
+            $sql .= ' ORDER BY favorites.created_at DESC';
+            
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            
+            if (!empty($search)) {
+                $searchTerm = '%' . $search . '%';
+                $stmt->bindParam(':search', $searchTerm);
+                $stmt->bindParam(':search2', $searchTerm);
+            }
+            
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {

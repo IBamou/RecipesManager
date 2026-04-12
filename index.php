@@ -49,7 +49,7 @@ switch ($url) {
         (new AuthController())->logout();
         break;
 
-    case 'recipes/discover':
+    case 'discover':
         requireLogin();
         (new RecipeController())->discover();
         break;

@@ -2,6 +2,7 @@
 require_once __DIR__ . "/Controller.php";
 require_once __DIR__ . "/../Models/RecipeModel.php";
 require_once __DIR__ . "/../Models/FavoriteModel.php";
+require_once __DIR__ . "/../Models/UserModel.php";
 
 class RecipeController extends Controller {
     private $recipeModel;
@@ -15,7 +16,8 @@ class RecipeController extends Controller {
 
     public function index() {
         $userId = $_SESSION['user']['id'] ?? 0;
-        $recipes = $this->recipeModel->getRecipesByUser($userId);
+        $search = trim($_GET['q'] ?? '');
+        $recipes = $this->recipeModel->getRecipesByUser($userId, $search);
         include __DIR__ . "/../Views/recipes/index.php";
     }
 
@@ -30,6 +32,14 @@ class RecipeController extends Controller {
     public function show() {
         $recipe_id = $_GET['recipe_id'] ?? null;
         $recipe = $this->recipeModel->getRecipeById($recipe_id);
+        
+        // Get chef user info
+        $chefUser = null;
+        if (!empty($recipe['user_id'])) {
+            $userModel = new UserModel();
+            $chefUser = $userModel->findById($recipe['user_id']);
+        }
+        
         include __DIR__ . "/../Views/recipes/show.php";
     }
 
@@ -37,13 +47,17 @@ class RecipeController extends Controller {
         $categories = $this->recipeModel->getCategories();
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Join arrays with newlines for storage
+            $ingredients = isset($_POST['ingredients']) ? implode("\n", array_filter($_POST['ingredients'])) : '';
+            $instructions = isset($_POST['steps']) ? implode("\n", array_filter($_POST['steps'])) : '';
+            
             $data = [
                 'name' => $_POST['name'] ?? '',
                 'description' => $_POST['description'] ?? '',
                 'user_id' => $_SESSION['user']['id'] ?? 0,
                 'category_id' => $_POST['category_id'] ?? null,
-                'ingredients' => $_POST['ingredients'] ?? '',
-                'instructions' => $_POST['instructions'] ?? '',
+                'ingredients' => $ingredients,
+                'instructions' => $instructions,
                 'preparation_time' => $_POST['preparation_time'] ?? 0,
                 'cooking_time' => $_POST['cooking_time'] ?? 0,
                 'difficulty' => $_POST['difficulty'] ?? 'medium',
@@ -60,13 +74,16 @@ class RecipeController extends Controller {
         $categories = $this->recipeModel->getCategories();
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $ingredients = isset($_POST['ingredients']) ? implode("\n", array_filter($_POST['ingredients'])) : '';
+            $instructions = isset($_POST['steps']) ? implode("\n", array_filter($_POST['steps'])) : '';
+            
             $data = [
                 'id' => $_POST['recipe_id'] ?? 0,
                 'name' => $_POST['name'] ?? '',
                 'description' => $_POST['description'] ?? '',
                 'category_id' => $_POST['category_id'] ?? null,
-                'ingredients' => $_POST['ingredients'] ?? '',
-                'instructions' => $_POST['instructions'] ?? '',
+                'ingredients' => $ingredients,
+                'instructions' => $instructions,
                 'preparation_time' => $_POST['preparation_time'] ?? 0,
                 'cooking_time' => $_POST['cooking_time'] ?? 0,
                 'difficulty' => $_POST['difficulty'] ?? 'medium',

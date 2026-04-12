@@ -7,11 +7,12 @@
     <div class="sub">Organize your recipes into curated collections</div>
   </div>
   <div class="header-right">
-    <!-- Search -->
-    <div class="search-wrap">
-      <i class="fas fa-search"></i>
-      <input type="search" id="cat-search" placeholder="Search categories..." oninput="filterCards(this.value,'cat-card')">
-    </div>
+    <form method="GET" action="" style="display:flex;gap:0;">
+      <input type="search" name="q" placeholder="Search categories..." value="<?php echo htmlspecialchars($_GET['q'] ?? ''); ?>" style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px 0 0 8px;color:var(--text);padding:.6rem .8rem;font-size:.85rem;width:200px;">
+      <button type="submit" class="btn btn-gold btn-sm" style="border-radius:0 8px 8px 0;">
+        <i class="fas fa-search"></i>
+      </button>
+    </form>
     <a href="<?php echo BASE_URL; ?>/categories/create" class="btn btn-gold">
       <i class="fas fa-plus"></i> New Category
     </a>
@@ -41,10 +42,10 @@
             <div class="cat-card-desc"><?php echo htmlspecialchars($cat['description'] ?? 'No description'); ?></div>
             <div class="cat-card-count"><i class="fas fa-utensils"></i> <?php echo $cat['recipe_count'] ?? 0; ?> recipes</div>
             <div class="cat-card-actions">
-              <a href="<?php echo BASE_URL; ?>/categories/show?category_id=<?php echo $cat['id']; ?>" class="btn btn-outline btn-sm" style="flex:1;justify-content:center;">
+              <a href="<?php echo BASE_URL; ?>/categories/show?category_id=<?php echo $cat['id']; ?>" class="btn btn-gold btn-sm" style="flex:1;justify-content:center;">
                 <i class="fas fa-eye"></i> View
               </a>
-              <a href="<?php echo BASE_URL; ?>/categories/edit?id=<?php echo $cat['id']; ?>" class="btn btn-ghost btn-sm btn-icon"><i class="fas fa-pen"></i></a>
+              <a href="<?php echo BASE_URL; ?>/categories/edit?id=<?php echo $cat['id']; ?>" class="btn btn-gold btn-sm btn-icon" style="background:var(--gold);color:#120d00;"><i class="fas fa-pen"></i></a>
               <form method="POST" action="<?php echo BASE_URL; ?>/categories/delete" style="display:inline;" onsubmit="return confirm('Delete this category?');">
                 <input type="hidden" name="category_id" value="<?php echo $cat['id']; ?>">
                 <button type="submit" class="btn btn-danger btn-sm btn-icon"><i class="fas fa-trash"></i></button>
@@ -56,15 +57,5 @@
     </div>
   <?php endif; ?>
 </div>
-
-<script>
-function filterCards(q, attr) {
-  const lower = q.toLowerCase();
-  document.querySelectorAll('[data-'+attr+']').forEach(card => {
-    const text = card.innerText.toLowerCase();
-    card.style.display = text.includes(lower) ? '' : 'none';
-  });
-}
-</script>
 
 <?php require __DIR__ . '/../layouts/footer.php'; ?>

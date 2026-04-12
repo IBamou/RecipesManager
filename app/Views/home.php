@@ -6,7 +6,7 @@
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <div class="hero-tag"><i class="fas fa-star"></i> Discover Moroccan Cuisine</div>
-    <h1>Taste the <em>Magic</em><br>of Marrakech</h1>
+    <h1>Taste the <em>Magic</em><br>of Morocco</h1>
     <p>Explore, create and share authentic Moroccan recipes with a vibrant community of passionate food lovers.</p>
     <div class="hero-actions">
       <?php if (!isset($_SESSION['user'])): ?>
@@ -20,7 +20,7 @@
         <a href="<?php echo BASE_URL; ?>/dashboard" class="btn btn-gold btn-lg">
           Go to Dashboard <i class="fas fa-arrow-right"></i>
         </a>
-        <a href="<?php echo BASE_URL; ?>/recipes/discover" class="btn btn-outline btn-lg">
+        <a href="<?php echo BASE_URL; ?>/discover" class="btn btn-outline btn-lg">
           Explore Recipes
         </a>
       <?php endif; ?>

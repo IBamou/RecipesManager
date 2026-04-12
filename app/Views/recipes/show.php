@@ -122,12 +122,18 @@
     <!-- RIGHT: Chef aside -->
     <aside>
       <div class="chef-aside">
-        <img src="https://i.pravatar.cc/150?u=<?php echo $recipe['user_id'] ?? 0; ?>" alt="Chef">
-        <div class="chef-name"><?php echo isset($_SESSION['user']) && $_SESSION['user']['id'] == $recipe['user_id'] ? htmlspecialchars($_SESSION['user']['name'] ?? 'Chef') : 'Chef #' . $recipe['user_id']; ?></div>
-        <div class="chef-role">Passionate Home Cook</div>
-        <a href="<?php echo BASE_URL; ?>/profile" class="btn btn-outline" style="width:100%;justify-content:center;">
-          <i class="fas fa-user"></i> View Profile
-        </a>
+        <?php 
+        $chefName = !empty($chefUser['name']) ? $chefUser['name'] : 'Chef';
+        $initials = strtoupper(substr($chefName, 0, 1) . (strpos($chefName, ' ') !== false ? substr($chefName, strpos($chefName, ' ') + 1, 1) : ''));
+        ?>
+        <div style="width:90px;height:90px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:2rem;color:#120d00;margin:0 auto 1rem;"><?php echo htmlspecialchars($initials); ?></div>
+        <div class="chef-name"><?php echo htmlspecialchars($chefName); ?></div>
+        <?php if (!empty($chefUser['bio'])): ?>
+        <p style="font-size:.85rem;color:var(--muted);margin:.5rem 0;line-height:1.5;"><?php echo htmlspecialchars($chefUser['bio']); ?></p>
+        <?php endif; ?>
+        <?php if (!empty($chefUser['birthday'])): ?>
+        <p style="font-size:.75rem;color:var(--gold);margin-bottom:1rem;"><i class="fas fa-birthday-cake"></i> <?php echo date('F j, Y', strtotime($chefUser['birthday'])); ?></p>
+        <?php endif; ?>
       </div>
     </aside>
 

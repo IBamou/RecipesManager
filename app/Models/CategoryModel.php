@@ -17,16 +17,27 @@ class CategoryModel extends Database {
         }
     }
 
-    public function getCategoriesByUser(int $userId) {
+    public function getCategoriesByUser(int $userId, string $search = '') {
         try {
             $sql = 'SELECT c.*, COUNT(r.id) as recipe_count 
                     FROM categories c 
                     LEFT JOIN recipes r ON c.id = r.category_id 
-                    WHERE c.user_id = :user_id 
-                    GROUP BY c.id 
-                    ORDER BY c.created_at DESC';
+                    WHERE c.user_id = :user_id';
+            
+            if (!empty($search)) {
+                $sql .= ' AND c.name LIKE :search';
+            }
+            
+            $sql .= ' GROUP BY c.id ORDER BY c.created_at DESC';
+            
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            
+            if (!empty($search)) {
+                $searchTerm = '%' . $search . '%';
+                $stmt->bindParam(':search', $searchTerm);
+            }
+            
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {

@@ -12,7 +12,7 @@
   <div class="grid grid-4 mb-2" style="margin-bottom:2.5rem;">
     <div class="stat-card fade-up">
       <div class="stat-icon"><i class="fas fa-utensils"></i></div>
-      <div><div class="stat-num"><?php echo $totalRecipes ?? 0; ?></div><div class="stat-label">Recipes</div></div>
+      <div><div class="stat-num"><?php echo $totalRecipes ?? 0; ?></div><div class="stat-label">My Recipes</div></div>
       <i class="fas fa-utensils bg-icon"></i>
     </div>
     <div class="stat-card fade-up" style="animation-delay:.1s">
@@ -21,14 +21,14 @@
       <i class="fas fa-layer-group bg-icon"></i>
     </div>
     <div class="stat-card fade-up" style="animation-delay:.2s">
-      <div class="stat-icon"><i class="fas fa-clock"></i></div>
-      <div><div class="stat-num"><?php echo $totalTime ?? 0; ?><small style="font-size:1rem;">m</small></div><div class="stat-label">Cooking Time</div></div>
-      <i class="fas fa-clock bg-icon"></i>
+      <div class="stat-icon"><i class="fas fa-star"></i></div>
+      <div><div class="stat-num"><?php echo $favoriteCount ?? 0; ?></div><div class="stat-label">Favorites</div></div>
+      <i class="fas fa-star bg-icon"></i>
     </div>
     <div class="stat-card fade-up" style="animation-delay:.3s">
-      <div class="stat-icon"><i class="fas fa-star"></i></div>
-      <div><div class="stat-num"><?php echo $easyRecipes ?? 0; ?></div><div class="stat-label">Easy Recipes</div></div>
-      <i class="fas fa-star bg-icon"></i>
+      <div class="stat-icon"><i class="fas fa-clock"></i></div>
+      <div><div class="stat-num"><?php echo $totalTime ?? 0; ?><small style="font-size:1rem;">m</small></div><div class="stat-label">Total Time</div></div>
+      <i class="fas fa-clock bg-icon"></i>
     </div>
   </div>
 
@@ -40,7 +40,7 @@
       <div class="hero-tag" style="margin-bottom:.75rem;"><i class="fas fa-compass"></i> Community</div>
       <h2>Discover the Atlas Mountains</h2>
       <p>Explore the hidden culinary secrets of Berber villages.</p>
-      <a href="<?php echo BASE_URL; ?>/recipes/discover" class="btn btn-gold">
+      <a href="<?php echo BASE_URL; ?>/discover" class="btn btn-gold">
         <i class="fas fa-compass"></i> Explore Recipes
       </a>
     </div>
@@ -70,15 +70,16 @@
             <?php endif; ?>
             <div class="recipe-badge">
               <span class="badge"><?php echo htmlspecialchars($recipe['difficulty'] ?? 'Easy'); ?></span>
-              <span class="badge"><?php echo ($recipe['preparation_time'] ?? 0) + ($recipe['cooking_time'] ?? 0); ?>m</span>
+              <span class="badge" title="Prep"><i class="fas fa-blender"></i> <?php echo $recipe['preparation_time'] ?? 0; ?></span>
+              <span class="badge" title="Cook"><i class="fas fa-fire-burner"></i> <?php echo $recipe['cooking_time'] ?? 0; ?></span>
             </div>
             <div class="recipe-card-body">
               <div class="recipe-card-title"><?php echo htmlspecialchars($recipe['name']); ?></div>
               <div class="recipe-card-desc"><?php echo htmlspecialchars(substr($recipe['description'] ?? '', 0, 80)); ?>...</div>
             </div>
-            <div class="recipe-card-actions">
-              <a href="<?php echo BASE_URL; ?>/recipes/show?recipe_id=<?php echo $recipe['id']; ?>" class="btn btn-outline btn-sm" style="flex:1;justify-content:center;">View</a>
-              <a href="<?php echo BASE_URL; ?>/recipes/edit?id=<?php echo $recipe['id']; ?>" class="btn btn-ghost btn-sm btn-icon"><i class="fas fa-pen"></i></a>
+            <div class="recipe-card-actions" style="padding:0 1rem 1rem;">
+              <a href="<?php echo BASE_URL; ?>/recipes/show?recipe_id=<?php echo $recipe['id']; ?>" class="btn btn-gold btn-sm" style="flex:1;justify-content:center;">View</a>
+              <a href="<?php echo BASE_URL; ?>/recipes/edit?id=<?php echo $recipe['id']; ?>" class="btn btn-gold btn-sm btn-icon" style="background:var(--gold);color:#120d00;"><i class="fas fa-pen"></i></a>
             </div>
           </div>
         <?php endforeach; ?>
